@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HireMate Research Survey</title>
+<meta name="description" content="5-minute anonymous survey on how freshers and early-career professionals prepare for job interviews.">
+<style>
+  :root{
+    --navy:#0B2545; --blue:#1F6FEB; --blue-soft:#E8F0FE;
+    --ink:#132238; --muted:#5B6B80; --line:#E3E8EF;
+    --bg:#F6F8FB; --card:#FFFFFF; --ok:#12A150; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 16px 48px}
+
+  /* header + progress */
+  header{position:sticky;top:0;z-index:10;background:var(--bg);padding:16px 0 10px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .mark{width:30px;height:30px;border-radius:9px;background:var(--blue);position:relative;flex:0 0 auto}
+  .mark::after{content:"";position:absolute;inset:8px 7px 9px 8px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(-45deg)}
+  .brand b{font-size:19px;letter-spacing:-.3px;color:var(--navy)}
+  .brand span{font-size:12px;color:var(--muted);display:block;margin-top:-2px}
+  .bar{height:6px;background:var(--line);border-radius:99px;margin-top:14px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--blue);border-radius:99px;transition:width .3s ease}
+  .steps{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+
+  /* cards */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-top:16px}
+  h1{font-size:26px;line-height:1.25;margin:4px 0 8px;color:var(--navy);letter-spacing:-.4px}
+  h2{font-size:17px;margin:0 0 4px;color:var(--navy)}
+  .lede{color:var(--muted);margin:0 0 4px}
+  .q{margin:22px 0 0}
+  .q:first-of-type{margin-top:6px}
+  .q > label.title{display:block;font-weight:600;margin-bottom:10px}
+  .req{color:#C2410C;font-weight:600}
+  .hint{font-size:13px;color:var(--muted);margin:-4px 0 10px}
+
+  /* options */
+  .opt{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-radius:11px;
+       padding:12px 13px;margin-bottom:8px;cursor:pointer;background:#fff;transition:.15s}
+  .opt:hover{border-color:#C7D6EA;background:#FBFCFE}
+  .opt input{margin:3px 0 0;accent-color:var(--blue);width:18px;height:18px;flex:0 0 auto}
+  .opt.sel{border-color:var(--blue);background:var(--blue-soft)}
+  .opt span{flex:1}
+  input[type=text],textarea{
+    width:100%;border:1px solid var(--line);border-radius:11px;padding:12px 13px;
+    font:inherit;color:inherit;background:#fff}
+  textarea{min-height:96px;resize:vertical}
+  input[type=text]:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
+
+  /* scale */
+  .scale{display:flex;gap:8px}
+  .scale button{flex:1;padding:14px 0;border:1px solid var(--line);background:#fff;border-radius:11px;
+    font:inherit;font-weight:600;cursor:pointer;color:var(--ink)}
+  .scale button.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .scale-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+
+  /* nav */
+  .nav{display:flex;gap:10px;margin-top:22px}
+  button.primary{flex:1;background:var(--blue);color:#fff;border:0;border-radius:11px;padding:15px;
+    font:inherit;font-weight:600;cursor:pointer}
+  button.primary:disabled{opacity:.55;cursor:not-allowed}
+  button.ghost{background:#fff;color:var(--muted);border:1px solid var(--line);border-radius:11px;
+    padding:15px 18px;font:inherit;cursor:pointer}
+  .err{color:#C2410C;font-size:14px;margin-top:10px;display:none}
+  .foot{text-align:center;color:var(--muted);font-size:12.5px;margin-top:18px}
+  .done{text-align:center;padding:34px 20px}
+  .done .tick{width:58px;height:58px;border-radius:50%;background:var(--ok);margin:0 auto 16px;position:relative}
+  .done .tick::after{content:"";position:absolute;left:20px;top:13px;width:14px;height:26px;
+    border-right:4px solid #fff;border-bottom:4px solid #fff;transform:rotate(45deg)}
+  .hidden{display:none}
+  @media (min-width:700px){ h1{font-size:30px} .card{padding:26px 28px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="mark"></div>
+      <div><b>HireMate</b><span>Practice. Feedback. Get hired.</span></div>
+    </div>
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="steps"><span id="stepLabel">Getting started</span><span id="stepCount"></span></div>
+  </header>
+
+  <!-- INTRO + SCREENER -->
+  <section class="card" id="s0">
+    <h1>How do you prepare for job interviews?</h1>
+    <p class="lede">We're building HireMate, an interview practice product for freshers and early-career people. Before building it, we want to understand how people actually prepare.</p>
+    <p class="lede"><b>5 minutes · anonymous · no sign-up</b></p>
+    <div class="q">
+      <label class="title">Are you a student, a fresher, or someone with less than 3 years of work experience who is looking for a job now or in the next 6 months? <span class="req">*</span></label>
+      <div data-radio="eligible">
+        <label class="opt"><input type="radio" name="eligible" value="Yes"><span>Yes</span></label>
+        <label class="opt"><input type="radio" name="eligible" value="No"><span>No</span></label>
+      </div>
+    </div>
+    <div class="nav"><button class="primary" data-next="1">Start</button></div>
+    <p class="err" id="e0">Please choose one option.</p>
+  </section>
+
+  <!-- 1. ABOUT YOU -->
+  <section class="card hidden" id="s1">
+    <h2>About you</h2>
+    <p class="lede">A few basics about where you are in your career.</p>
+
+    <div class="q">
+      <label class="title">1. What best describes you right now? <span class="req">*</span></label>
+      <div data-radio="stage">
+        <label class="opt"><input type="radio" name="stage" value="Final-year student"><span>Final-year student</span></label>
+        <label class="opt"><input type="radio" name="stage" value="Graduated, looking for first job"><span>Graduated, looking for my first job</span></label>
+        <label class="opt"><input type="radio" name="stage" value="Working, less than 1 year"><span>Working, less than 1 year of experience</span></label>
+        <label class="opt"><input type="radio" name="stage" value="Working, 1-3 years"><span>Working, 1–3 years of experience</span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <label class="title">2. Which roles are you applying for, or planning to apply for? <span class="req">*</span></label>
+      <p class="hint">Choose all that apply.</p>
+      <div data-check="roles">
+        <label class="opt"><input type="checkbox" name="roles" value="Data Analyst / MIS / Business Analyst"><span>Data Analyst / MIS / Business Analyst</span></label>
+        <label class="opt"><input type="checkbox" name="roles" value="Credit Analyst / Credit Officer"><span>Credit Analyst / Credit Officer</span></label>
+        <label class="opt"><input type="checkbox" name="roles" value="Field Sales / Relationship Executive"><span>Field Sales / Relationship Executive (bank, NBFC, insurance)</span></label>
+        <label class="opt"><input type="checkbox" name="roles" value="Collections / Recovery Officer"><span>Collections / Recovery Officer</span></label>
+        <label class="opt"><input type="checkbox" name="roles" value="Other"><span>Other</span></label>
+      </div>
+      <input type="text" id="roles_other" class="hidden" placeholder="Which role?">
+    </div>
+
+    <div class="q">
+      <label class="title">3. Where do you live? <span class="req">*</span></label>
+      <div data-radio="location">
+        <label class="opt"><input type="radio" name="location" value="Metro"><span>Metro city (Mumbai, Delhi NCR, Bengaluru, Chennai, Hyderabad, Pune, Kolkata)</span></label>
+        <label class="opt"><input type="radio" name="location" value="Tier-2"><span>Tier-2 city</span></label>
+        <label class="opt"><input type="radio" name="location" value="Town / rural"><span>Smaller town / rural area</span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <label class="title">4. In which language are you most comfortable answering interview questions? <span class="req">*</span></label>
+      <div data-radio="language">
+        <label class="opt"><input type="radio" name="language" value="English"><span>English</span></label>
+        <label class="opt"><input type="radio" name="language" value="Hindi"><span>Hindi</span></label>
+        <label class="opt"><input type="radio" name="language" value="Mix of English and Hindi"><span>Mix of English and Hindi</span></label>
+        <label class="opt"><input type="radio" name="language" value="Other"><span>Another regional language</span></label>
+      </div>
+      <input type="text" id="language_other" class="hidden" placeholder="Which language?">
+    </div>
+
+    <div class="nav"><button class="ghost" data-back="0">Back</button><button class="primary" data-next="2">Next</button></div>
+    <p class="err" id="e1">Please answer all the questions marked *.</p>
+  </section>
+
+  <!-- 2. RECENT INTERVIEWS -->
+  <section class="card hidden" id="s2">
+    <h2>Your recent interviews</h2>
+    <p class="lede">Think about the last interview you attended.</p>
+
+    <div class="q">
+      <label class="title">5. How many job interviews have you attended in the last 6 months? <span class="req">*</span></label>
+      <div data-radio="interviews_6m">
+        <label class="opt"><input type="radio" name="interviews_6m" value="0"><span>0</span></label>
+        <label class="opt"><input type="radio" name="interviews_6m" value="1-2"><span>1–2</span></label>
+        <label class="opt"><input type="radio" name="interviews_6m" value="3-5"><span>3–5</span></label>
+        <label class="opt"><input type="radio" name="interviews_6m" value="6+"><span>6 or more</span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <label class="title">6. How many of those turned into a job offer?</label>
+      <div data-radio="offers">
+        <label class="opt"><input type="radio" name="offers" value="None"><span>None</span></label>
+        <label class="opt"><input type="radio" name="offers" value="1"><span>1</span></label>
+        <label class="opt"><input type="radio" name="offers" value="2+"><span>2 or more</span></label>
+        <label class="opt"><input type="radio" name="offers" value="Waiting"><span>Still waiting for results</span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <label class="title">7. How did you prepare for your most recent interview? <span class="req">*</span></label>
+      <p class="hint">Choose all that apply.</p>
+      <div data-check="prep">
+        <label class="opt"><input type="checkbox" name="prep" value="Didn't prepare much"><span>Didn't prepare much</span></label>
+        <label class="opt"><input type="checkbox" name="prep" value="YouTube / online articles"><span>YouTube videos / online articles</span></label>
+        <label class="opt"><input type="checkbox" name="prep" value="Practised with friends or seniors"><span>Practised with friends, seniors or family</span></label>
+        <label class="opt"><input type="checkbox" name="prep" value="College placement cell"><span>College placement cell / training</span></label>
+        <label class="opt"><input type="checkbox" name="prep" value="ChatGPT or AI chatbot"><span>ChatGPT or another AI chatbot</span></label>
+        <label class="opt"><input type="checkbox" name="prep" value="AI mock interview app"><span>An AI mock-interview app (name it below)</span></label>
+        <label class="opt"><input type="checkbox" name="prep" value="Paid coaching or mock"><span>Paid coaching or paid mock interview</span></label>
+        <label class="opt"><input type="checkbox" name="prep" value="Other"><span>Other</span></label>
+      </div>
+      <input type="text" id="prep_other" class="hidden" placeholder="Which app, or what else?">
+    </div>
+
+    <div class="q">
+      <label class="title">8. In that interview, what was the hardest part? <span class="req">*</span></label>
+      <div data-radio="hardest">
+        <label class="opt"><input type="radio" name="hardest" value="Technical / subject questions"><span>Technical / subject questions (Excel, SQL, finance, credit)</span></label>
+        <label class="opt"><input type="radio" name="hardest" value="Explaining my background"><span>Explaining my background and experience</span></label>
+        <label class="opt"><input type="radio" name="hardest" value="Nervousness / confidence"><span>Nervousness / confidence</span></label>
+        <label class="opt"><input type="radio" name="hardest" value="Speaking in the interview language"><span>Speaking fluently in the interview language</span></label>
+        <label class="opt"><input type="radio" name="hardest" value="Sales pitch / role-play"><span>Sales pitch / role-play / handling a customer situation</span></label>
+        <label class="opt"><input type="radio" name="hardest" value="Salary discussion"><span>Salary discussion</span></label>
+        <label class="opt"><input type="radio" name="hardest" value="Not sure"><span>Not sure: I don't know where I went wrong</span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <label class="title">9. When you weren't selected, did anyone tell you why? <span class="req">*</span></label>
+      <div data-radio="feedback">
+        <label class="opt"><input type="radio" name="feedback" value="Clear feedback"><span>Yes, I got clear feedback</span></label>
+        <label class="opt"><input type="radio" name="feedback" value="Vague answer"><span>I got a vague answer ("we'll get back to you", "not a fit")</span></label>
+        <label class="opt"><input type="radio" name="feedback" value="No feedback"><span>No feedback at all</span></label>
+        <label class="opt"><input type="radio" name="feedback" value="Not rejected yet"><span>I haven't been rejected yet</span></label>
+      </div>
+    </div>
+
+    <div class="nav"><button class="ghost" data-back="1">Back</button><button class="primary" data-next="3">Next</button></div>
+    <p class="err" id="e2">Please answer all the questions marked *.</p>
+  </section>
+
+  <!-- 3. SPENDING -->
+  <section class="card hidden" id="s3">
+    <h2>Spending and preparation</h2>
+    <p class="lede">How you prepare, and what you've spent on your job search.</p>
+
+    <div class="q">
+      <label class="title">10. In the last 12 months, roughly how much have you spent on your job search? <span class="req">*</span></label>
+      <p class="hint">Resume writing, Naukri or LinkedIn paid plans, courses, coaching, mock interviews.</p>
+      <div data-radio="spend_12m">
+        <label class="opt"><input type="radio" name="spend_12m" value="0"><span>₹0</span></label>
+        <label class="opt"><input type="radio" name="spend_12m" value="Under 500"><span>Under ₹500</span></label>
+        <label class="opt"><input type="radio" name="spend_12m" value="500-2000"><span>₹500 – ₹2,000</span></label>
+        <label class="opt"><input type="radio" name="spend_12m" value="2000-5000"><span>₹2,000 – ₹5,000</span></label>
+        <label class="opt"><input type="radio" name="spend_12m" value="5000+"><span>More than ₹5,000</span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <label class="title">11. Has anyone ever asked you to pay money in exchange for getting you a job? <span class="req">*</span></label>
+      <div data-radio="paid_for_job">
+        <label class="opt"><input type="radio" name="paid_for_job" value="Yes, paid"><span>Yes, and I paid</span></label>
+        <label class="opt"><input type="radio" name="paid_for_job" value="Yes, refused"><span>Yes, but I refused</span></label>
+        <label class="opt"><input type="radio" name="paid_for_job" value="No"><span>No</span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <label class="title">12. Before an interview, how confident do you usually feel? <span class="req">*</span></label>
+      <div class="scale" id="scale">
+        <button type="button" data-v="1">1</button><button type="button" data-v="2">2</button>
+        <button type="button" data-v="3">3</button><button type="button" data-v="4">4</button>
+        <button type="button" data-v="5">5</button>
+      </div>
+      <div class="scale-lbl"><span>Very nervous</span><span>Fully confident</span></div>
+    </div>
+
+    <div class="q">
+      <label class="title">13. If you could practise a real interview for your target role and get feedback, which would you most likely choose? <span class="req">*</span></label>
+      <div data-radio="price_choice">
+        <label class="opt"><input type="radio" name="price_choice" value="Free only"><span>Only if it's free</span></label>
+        <label class="opt"><input type="radio" name="price_choice" value="Pay per session ~99"><span>Pay per practice session (around ₹99)</span></label>
+        <label class="opt"><input type="radio" name="price_choice" value="Pack ~499 for 10"><span>A pack of sessions, cheaper per session (around ₹499 for 10)</span></label>
+        <label class="opt"><input type="radio" name="price_choice" value="Monthly unlimited"><span>A monthly plan with unlimited practice</span></label>
+        <label class="opt"><input type="radio" name="price_choice" value="Would not use"><span>I wouldn't use it</span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <label class="title">14. Describe one interview question you struggled with recently, or one thing you wish you had done differently.</label>
+      <textarea id="story" placeholder="In your own words. English or Hindi, both are fine."></textarea>
+    </div>
+
+    <div class="nav"><button class="ghost" data-back="2">Back</button><button class="primary" data-next="4">Next</button></div>
+    <p class="err" id="e3">Please answer all the questions marked *.</p>
+  </section>
+
+  <!-- 4. CONTACT + SUBMIT -->
+  <section class="card hidden" id="s4">
+    <h2>One last thing (optional)</h2>
+    <p class="lede">We're speaking to a few people for 20 minutes to understand their experience in more detail.</p>
+    <div class="q">
+      <label class="title">15. Happy to have a short chat? Leave your name and phone number or email.</label>
+      <p class="hint">Used only to schedule that one call. Never shared, never used for marketing. Leave it blank if you'd rather not.</p>
+      <input type="text" id="contact" placeholder="Name + phone or email">
+    </div>
+    <div class="nav"><button class="ghost" data-back="3">Back</button><button class="primary" id="submitBtn">Submit</button></div>
+    <p class="err" id="e4">Something went wrong. Please check your connection and try again.</p>
+    <p class="foot">Your answers are anonymous. We don't collect your email unless you type it above.</p>
+  </section>
+
+  <!-- CLOSED -->
+  <section class="card hidden done" id="sClosed">
+    <h2>This survey is now closed</h2>
+    <p class="lede">Responses closed on 30 September 2026. Thank you to everyone who took part: the findings are going into what we build next.</p>
+  </section>
+
+  <!-- DONE -->
+  <section class="card hidden done" id="sDone">
+    <div class="tick"></div>
+    <h2 id="doneTitle">Thank you!</h2>
+    <p class="lede" id="doneMsg">Your answers help us understand how people really prepare for interviews. If you left your number, we'll reach out for a short chat.</p>
+  </section>
+
+  <p class="foot">Research project · Part of the IIT Roorkee &times; Masai Product Management program</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+/* ---------- 1. PASTE YOUR SUPABASE VALUES HERE ---------- */
+const SUPABASE_URL = "https://izlxncfcuvjqzxxbyidt.supabase.co";      // e.g. https://abcdxyz.supabase.co
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml6bHhuY2ZjdXZqcXp4eGJ5aWR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MzU0NjYsImV4cCI6MjEwMzQxMTQ2Nn0.KxYUlZtSjVAIJHAvb_iCFkL-US43ZdwSQ5tvAS6aqlc";    // the public anon key
+/* -------------------------------------------------------- */
+
+/* The client is created only when real values are filled in, so the page still
+   works for a preview/test run with the placeholders in place. */
+const CONFIGURED = /^https:\/\/.+\.supabase\.co/.test(SUPABASE_URL) && SUPABASE_ANON_KEY.length > 20;
+let db = null;
+function getDb(){
+  if(!db) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  return db;
+}
+if(!CONFIGURED) console.warn("HireMate survey: Supabase not configured yet. Answers will NOT be saved.");
+
+const SECTIONS = ["s0","s1","s2","s3","s4"];
+const LABELS = ["Getting started","About you","Your recent interviews","Spending and preparation","Almost done"];
+let current = 0;
+let confidence = null;
+
+const $ = s => document.querySelector(s);
+const val = n => { const el = document.querySelector(`input[name="${n}"]:checked`); return el ? el.value : null; };
+const vals = n => [...document.querySelectorAll(`input[name="${n}"]:checked`)].map(e => e.value);
+
+function show(i){
+  SECTIONS.forEach((id,idx)=> $("#"+id).classList.toggle("hidden", idx!==i));
+  $("#sDone").classList.add("hidden");
+  current = i;
+  $("#barFill").style.width = (i/4*100) + "%";
+  $("#stepLabel").textContent = LABELS[i];
+  $("#stepCount").textContent = "Step " + (i+1) + " of 5";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* highlight selected options */
+document.addEventListener("change", e => {
+  if(e.target.type === "radio"){
+    const group = e.target.closest("[data-radio]");
+    if(group) group.querySelectorAll(".opt").forEach(o => o.classList.toggle("sel", o.contains(e.target) && e.target.checked));
+  }
+  if(e.target.type === "checkbox"){
+    e.target.closest(".opt").classList.toggle("sel", e.target.checked);
+  }
+  // show "other" text boxes
+  toggleOther("roles","Other","#roles_other");
+  toggleOther("language","Other","#language_other");
+  toggleOther("prep","Other","#prep_other");
+  toggleOther("prep","AI mock interview app","#prep_other");
+});
+function toggleOther(name, trigger, target){
+  const on = [...document.querySelectorAll(`input[name="${name}"]:checked`)].some(i => i.value === trigger);
+  const box = document.querySelector(target);
+  if(on) box.classList.remove("hidden");
+  else if(!isOtherStillNeeded(name, target)) box.classList.add("hidden");
+}
+function isOtherStillNeeded(name, target){
+  if(target !== "#prep_other") return false;
+  return [...document.querySelectorAll('input[name="prep"]:checked')]
+    .some(i => i.value === "Other" || i.value === "AI mock interview app");
+}
+
+/* scale buttons */
+$("#scale").addEventListener("click", e => {
+  if(e.target.tagName !== "BUTTON") return;
+  confidence = Number(e.target.dataset.v);
+  [...$("#scale").children].forEach(b => b.classList.toggle("sel", b === e.target));
+});
+
+/* required checks per section */
+const REQUIRED = {
+  0: () => !!val("eligible"),
+  1: () => val("stage") && vals("roles").length && val("location") && val("language"),
+  2: () => val("interviews_6m") && vals("prep").length && val("hardest") && val("feedback"),
+  3: () => val("spend_12m") && val("paid_for_job") && confidence && val("price_choice"),
+  4: () => true
+};
+
+document.addEventListener("click", e => {
+  const next = e.target.dataset.next, back = e.target.dataset.back;
+  if(next !== undefined){
+    const err = $("#e"+current);
+    if(!REQUIRED[current]()){ err.style.display="block"; return; }
+    err.style.display="none";
+    if(current === 0 && val("eligible") === "No"){ submit(true); return; }
+    show(Number(next));
+  }
+  if(back !== undefined) show(Number(back));
+});
+
+function param(n){ return new URLSearchParams(location.search).get(n); }
+
+async function submit(screenedOut){
+  const btn = $("#submitBtn");
+  if(btn && !screenedOut){ btn.disabled = true; btn.textContent = "Submitting…"; }
+
+  const row = screenedOut ? { eligible:false } : {
+    eligible: true,
+    stage: val("stage"),
+    roles: vals("roles"),
+    roles_other: $("#roles_other").value.trim() || null,
+    location: val("location"),
+    language: val("language"),
+    language_other: $("#language_other").value.trim() || null,
+    interviews_6m: val("interviews_6m"),
+    offers: val("offers"),
+    prep: vals("prep"),
+    prep_other: $("#prep_other").value.trim() || null,
+    hardest: val("hardest"),
+    feedback: val("feedback"),
+    spend_12m: val("spend_12m"),
+    paid_for_job: val("paid_for_job"),
+    confidence: confidence,
+    price_choice: val("price_choice"),
+    story: $("#story").value.trim() || null,
+    contact: $("#contact").value.trim() || null
+  };
+  row.source = param("src") || "direct";
+  row.device = window.innerWidth < 700 ? "mobile" : "desktop";
+
+  let error = null;
+  if(CONFIGURED){
+    ({ error } = await getDb().from("hiremate_survey_responses").insert(row));
+  } else {
+    console.warn("Not saved (no Supabase config). Row would have been:", row);
+  }
+
+  if(error && !screenedOut){
+    $("#e4").style.display = "block";
+    btn.disabled = false; btn.textContent = "Submit";
+    return;
+  }
+
+  SECTIONS.forEach(id => $("#"+id).classList.add("hidden"));
+  $("#sDone").classList.remove("hidden");
+  $("#barFill").style.width = "100%";
+  $("#stepLabel").textContent = "Done";
+  $("#stepCount").textContent = "";
+  if(screenedOut){
+    $("#doneTitle").textContent = "Thanks for checking!";
+    $("#doneMsg").textContent = "This survey is only for students, freshers and people with less than 3 years of experience. If you know someone in that stage, please pass the link on.";
+  }
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+$("#submitBtn").addEventListener("click", () => submit(false));
+
+/* Survey closes at the end of 30 September 2026, India time (18:30 UTC on 30 Sep). */
+const CLOSES_AT = Date.UTC(2026, 8, 30, 18, 30, 0);
+if(Date.now() > CLOSES_AT){
+  SECTIONS.forEach(id => $("#"+id).classList.add("hidden"));
+  $("#sClosed").classList.remove("hidden");
+  $("#barFill").style.width = "100%";
+  $("#stepLabel").textContent = "Closed";
+  $("#stepCount").textContent = "";
+} else {
+  show(0);
+}
+</script>
+</body>
+</html>
