@@ -42,6 +42,11 @@ create table if not exists public.hiremate_survey_responses (
 -- Row Level Security: anyone can submit, nobody can read without your key
 alter table public.hiremate_survey_responses enable row level security;
 
+-- Table privileges for the public (anon) role. Needed on projects where the
+-- default grants have been revoked; without this the insert fails with 42501.
+grant usage on schema public to anon;
+grant insert on table public.hiremate_survey_responses to anon;
+
 drop policy if exists "anon can insert responses" on public.hiremate_survey_responses;
 create policy "anon can insert responses"
   on public.hiremate_survey_responses

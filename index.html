@@ -406,9 +406,14 @@ document.addEventListener("click", e => {
 
 function param(n){ return new URLSearchParams(location.search).get(n); }
 
+let sending = false;   // stops repeated taps writing duplicate rows
+
 async function submit(screenedOut){
+  if(sending) return;
+  sending = true;
   const btn = $("#submitBtn");
   if(btn && !screenedOut){ btn.disabled = true; btn.textContent = "Submitting…"; }
+  document.querySelectorAll("[data-next]").forEach(b => b.disabled = true);
 
   const row = screenedOut ? { eligible:false } : {
     eligible: true,
@@ -444,6 +449,8 @@ async function submit(screenedOut){
   if(error && !screenedOut){
     $("#e4").style.display = "block";
     btn.disabled = false; btn.textContent = "Submit";
+    document.querySelectorAll("[data-next]").forEach(b => b.disabled = false);
+    sending = false;
     return;
   }
 
