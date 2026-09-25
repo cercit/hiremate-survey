@@ -83,13 +83,15 @@
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;transition:.2s;pointer-events:none}
   .toast.show{opacity:1}
   @media (max-width:560px){ .choices{grid-template-columns:1fr} h1{font-size:23px} .card{padding:18px} .result-head{flex-direction:column;align-items:flex-start} }
+  .homebtn{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;text-decoration:none;color:var(--navy);background:#fff;border:1px solid var(--line);padding:7px 13px;border-radius:99px;white-space:nowrap}
+  .homebtn:hover{border-color:var(--blue);color:var(--blue)}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <a class="brand" href="../home/"><div class="mark"></div><b>HireMate</b></a>
-    <span class="proto">Prototype</span>
+    <span style="display:flex;gap:8px;align-items:center"><span class="proto">Prototype</span><a class="homebtn" href="../strategy/">⌂ Home</a></span>
   </header>
 
   <!-- 1. SETUP -->
@@ -422,11 +424,36 @@ $("#sampleBtn").addEventListener("click", () => {
 });
 
 /* ---------- voice: read the question aloud ---------- */
+// Prefer the natural/neural voices (Edge "Online (Natural)", Chrome "Google"),
+// female Indian voices first, and fall back to anything in the right language.
+let VOICES = [];
+function loadVoices(){ if("speechSynthesis" in window) VOICES = speechSynthesis.getVoices(); }
+loadVoices();
+if("speechSynthesis" in window) speechSynthesis.addEventListener("voiceschanged", loadVoices);
+function pickVoice(l){
+  if(!VOICES.length) loadVoices();
+  const want = l==="hi" ? "hi" : "en";
+  const pool = VOICES.filter(v => v.lang.toLowerCase().startsWith(want));
+  const rank = v => {
+    const n = v.name.toLowerCase(), lg = v.lang.toLowerCase();
+    let s = 0;
+    if(/natural|neural|online/.test(n)) s += 50;
+    if(n.includes("google")) s += 30;
+    if(/neerja|swara|heera|kalpana|aditi|raveena|veena|female|zira|aria|jenny|sonia|libby/.test(n)) s += 20;
+    if(lg.endsWith("-in")) s += 15;
+    if(/david|mark|george|ravi|hemant|prabhat|male/.test(n) && !n.includes("female")) s -= 10;
+    return s;
+  };
+  return pool.sort((a,b) => rank(b) - rank(a))[0] || null;
+}
 $("#listenBtn").addEventListener("click", () => {
   if(!("speechSynthesis" in window)){ toast("Your browser can't read aloud."); return; }
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance($("#question").textContent);
-  u.lang = lang==="hi" ? "hi-IN" : "en-IN"; u.rate = .95;
+  u.lang = lang==="hi" ? "hi-IN" : "en-IN";
+  const v = pickVoice(lang);
+  if(v){ u.voice = v; u.lang = v.lang; }
+  u.rate = .9; u.pitch = 1.05; u.volume = .9;
   speechSynthesis.speak(u);
 });
 

@@ -77,15 +77,21 @@
     border-right:4px solid #fff;border-bottom:4px solid #fff;transform:rotate(45deg)}
   .hidden{display:none}
   @media (min-width:700px){ h1{font-size:30px} .card{padding:26px 28px} }
+  .homebtn{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;text-decoration:none;color:var(--navy);background:#fff;border:1px solid var(--line);padding:7px 13px;border-radius:99px;white-space:nowrap}
+  .homebtn:hover{border-color:var(--blue);color:var(--blue)}
+  .hrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <header>
+    <div class="hrow">
     <div class="brand">
       <div class="mark"></div>
       <div><b>HireMate</b><span>Practice. Feedback. Get hired.</span></div>
+    </div>
+    <a class="homebtn" href="strategy/">⌂ Home</a>
     </div>
     <div class="bar"><i id="barFill"></i></div>
     <div class="steps"><span id="stepLabel">Getting started</span><span id="stepCount"></span></div>
