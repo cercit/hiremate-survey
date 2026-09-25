@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HireMate Launch Strategy</title>
+<meta name="description" content="Launch strategy for HireMate, an AI mock-interview platform for BFSI and analyst roles in India: pricing, growth, MVP, metrics, landing page and prototype.">
+<style>
+  :root{
+    --navy:#0B2545; --navy-2:#13315C; --blue:#1F6FEB; --blue-soft:#E8F0FE;
+    --ink:#132238; --muted:#5B6B80; --line:#E3E8EF; --bg:#FFFFFF; --bg-2:#F6F8FB;
+    --ok:#12A150; --ok-soft:#E7F6EE; --warn:#C2410C; --warn-soft:#FDF0E8; --amber:#A16207; --amber-soft:#FEF6E0;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --navy:#DCE7F7; --navy-2:#1A2A40; --blue:#5B9BFF; --blue-soft:#15294A;
+      --ink:#E4EAF2; --muted:#9AA8BA; --line:#26344A; --bg:#0D1624; --bg-2:#121E30;
+      --ok:#3CCB7F; --ok-soft:#10301F; --warn:#FF8A5B; --warn-soft:#3A1E12; --amber:#F2C14E; --amber-soft:#33290F;
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans Devanagari",sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased;font-size:16px}
+  a{color:var(--blue)}
+  header.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+  header.top .in{max-width:1180px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--navy)}
+  .mark{width:28px;height:28px;border-radius:8px;background:#1F6FEB;position:relative;flex:0 0 auto}
+  .mark::after{content:"";position:absolute;inset:7px 6px 8px 7px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(-45deg)}
+  .brand b{font-size:18px}
+  .tabs{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto}
+  .tabs a{white-space:nowrap;text-decoration:none;font-size:14px;color:var(--muted);padding:7px 12px;border-radius:99px;border:1px solid var(--line)}
+  .tabs a.on{background:var(--blue);border-color:var(--blue);color:#fff}
+
+  .layout{max-width:1180px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px}
+  aside{position:sticky;top:84px;align-self:start;padding:28px 0;font-size:14px}
+  aside a{display:block;text-decoration:none;color:var(--muted);padding:5px 0 5px 12px;border-left:2px solid var(--line)}
+  aside a:hover{color:var(--navy);border-left-color:var(--blue)}
+  aside .k{font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:8px;font-weight:700}
+  main{padding:32px 0 80px;min-width:0}
+
+  .hero{padding:10px 0 26px;border-bottom:1px solid var(--line);margin-bottom:10px}
+  .eyebrow{display:inline-block;font-size:12.5px;font-weight:700;color:var(--blue);background:var(--blue-soft);padding:5px 11px;border-radius:99px}
+  h1{font-size:40px;line-height:1.12;letter-spacing:-1px;margin:14px 0 10px;color:var(--navy)}
+  h2{font-size:27px;letter-spacing:-.5px;margin:0 0 6px;color:var(--navy)}
+  h3{font-size:18px;margin:26px 0 8px;color:var(--navy)}
+  .lede{font-size:18px;color:var(--muted);margin:0 0 14px;max-width:760px}
+  .meta{font-size:14px;color:var(--muted)}
+  section{padding:40px 0 8px;scroll-margin-top:70px}
+  .num{color:var(--blue);margin-right:8px}
+  p{margin:0 0 12px}
+  .sub{color:var(--muted)}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0 4px}
+  .kpi{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--bg-2)}
+  .kpi b{display:block;font-size:24px;color:var(--navy);letter-spacing:-.5px}
+  .kpi span{font-size:13px;color:var(--muted)}
+
+  .tbl{overflow-x:auto;margin:10px 0 14px;border:1px solid var(--line);border-radius:12px}
+  table{border-collapse:collapse;width:100%;font-size:14.5px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--bg-2);font-size:13px;color:var(--muted);font-weight:700}
+  tr:last-child td{border-bottom:0}
+  tr.us td{background:var(--blue-soft)}
+
+  .callout{border-left:4px solid var(--blue);background:var(--blue-soft);padding:14px 16px;border-radius:0 12px 12px 0;margin:14px 0}
+  .callout.amber{border-color:var(--amber);background:var(--amber-soft)}
+  .callout.ok{border-color:var(--ok);background:var(--ok-soft)}
+  .tag{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap}
+  .tag.v{background:var(--ok-soft);color:var(--ok)}
+  .tag.a{background:var(--amber-soft);color:var(--amber)}
+  .tag.w{background:var(--warn-soft);color:var(--warn)}
+
+  .tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+  .tier{border:1px solid var(--line);border-radius:14px;padding:16px}
+  .tier.best{border:2px solid var(--blue)}
+  .tier .p{font-size:26px;font-weight:800;color:var(--navy);letter-spacing:-.5px}
+  .tier ul{padding-left:18px;margin:8px 0 0;font-size:14px;color:var(--muted)}
+  .tier h4{margin:0;font-size:15px}
+
+  .phases{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+  .phase{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--bg-2)}
+  .phase .r{font-size:22px;font-weight:800;color:var(--navy)}
+  .phase ul{padding-left:18px;margin:8px 0 0;font-size:14px}
+
+  .bar{display:flex;align-items:center;gap:10px;font-size:14px;margin:6px 0}
+  .bar .l{width:170px;flex:0 0 auto;color:var(--muted)}
+  .bar .t{flex:1;height:12px;background:var(--line);border-radius:99px;overflow:hidden}
+  .bar .t i{display:block;height:100%;background:var(--blue);border-radius:99px}
+  .bar .n{width:34px;text-align:right;font-weight:700}
+
+  .frame{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2)}
+  .frame .bar2{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;font-size:13px;color:var(--muted);border-bottom:1px solid var(--line)}
+  iframe{display:block;width:100%;height:640px;border:0;background:#fff}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .post{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--bg);font-size:14.5px;white-space:pre-wrap}
+  .post .h{font-weight:700;color:var(--navy);margin-bottom:6px;white-space:normal}
+  .slides{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}
+  .slide{aspect-ratio:4/5;border-radius:10px;background:#0B2545;color:#fff;padding:10px;font-size:12.5px;font-weight:700;display:flex;align-items:flex-end;line-height:1.3}
+  .slide:nth-child(even){background:#1F6FEB}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:10px;background:#1F6FEB;color:#fff;text-decoration:none;font-weight:600;font-size:14.5px}
+  .btn.g{background:transparent;color:var(--navy);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+  ol.q li{margin-bottom:10px}
+  footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;font-size:13px;color:var(--muted)}
+
+  @media (max-width:900px){
+    .layout{grid-template-columns:1fr;gap:0}
+    aside{display:none}
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .tiers{grid-template-columns:repeat(2,1fr)}
+    .phases,.two{grid-template-columns:1fr}
+    .slides{grid-template-columns:repeat(3,1fr)}
+    h1{font-size:30px}
+    iframe{height:560px}
+  }
+  @media (max-width:520px){
+    header.top .in{padding:0 16px}
+    .layout{padding:0 16px}
+    .brand b{display:none}
+    .tiers{grid-template-columns:1fr}
+    .bar .l{width:110px}
+  }
+</style>
+</head>
+<body>
+
+<header class="top"><div class="in">
+  <a class="brand" href="#top"><div class="mark"></div><b>HireMate</b></a>
+  <nav class="tabs">
+    <a class="on" href="./">Strategy</a>
+    <a href="../home/">Landing page</a>
+    <a href="../demo/">Prototype</a>
+    <a href="../?src=strategy">Survey</a>
+  </nav>
+</div></header>
+
+<div class="layout" id="top">
+  <aside>
+    <div class="k">Contents</div>
+    <a href="#exec">1. Executive summary</a>
+    <a href="#users">2. Market and users</a>
+    <a href="#pricing">3. Pricing</a>
+    <a href="#growth">4. Growth, 0 → 10k</a>
+    <a href="#mvp">5. MVP and validation</a>
+    <a href="#metrics">6. Success metrics</a>
+    <a href="#bonus">7. Landing, prototype, posts</a>
+    <a href="#risks">8. Risks</a>
+    <a href="#ask">Feedback I need</a>
+  </aside>
+
+<main>
+  <div class="hero">
+    <span class="eyebrow">Launch strategy · working draft for mentor review</span>
+    <h1>HireMate: practise the real interview, in your language</h1>
+    <p class="lede">An AI mock-interview platform for Indian freshers and early-career switchers going into BFSI and analyst roles. It covers pricing, the path to 10,000 users, the MVP and the metrics, with a live landing page and a clickable prototype.</p>
+    <p class="meta">Sameer Shreenivas Mittimani · Masai × IIT Roorkee Product Management · 25 Sep 2026 ·
+      <span class="tag v">Verified</span> checked at source &nbsp;<span class="tag a">Assumed</span> decision still to be validated</p>
+    <div class="row">
+      <a class="btn" href="../demo/">Try the prototype →</a>
+      <a class="btn g" href="../home/">See the landing page</a>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <section id="exec">
+    <h2><span class="num">1</span>Executive summary</h2>
+    <p>Entry-level hiring in India is growing, but most candidates walk in unprepared and nobody tells them why they were rejected. HireMate runs the real interview for four high-volume roles: <b>Data Analyst, Credit Analyst, Field Sales / Relationship Executive and Collections Officer</b>. It does this in English or Hindi, then scores the answer against others going for the same role and lists what to fix.</p>
+    <p>Candidates pay small amounts, starting with a free first mock and ₹99 per mock after that. Once the candidate pool is big enough, the larger revenue comes from <b>employers, who pay a success fee only when they hire</b> a pre-screened candidate. The plan reaches <b>10,000 users in 6 months</b> through colleges, WhatsApp job groups and a shareable score card.</p>
+    <div class="kpis">
+      <div class="kpi"><b>10,000</b><span>users by month 6</span></div>
+      <div class="kpi"><b>5,000/wk</b><span>mocks completed (North Star)</span></div>
+      <div class="kpi"><b>&lt; ₹40</b><span>blended CAC</span></div>
+      <div class="kpi"><b>~₹10</b><span>AI cost per 20-min mock</span></div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section id="users">
+    <h2><span class="num">2</span>Market and users</h2>
+    <p class="sub">Why now: hiring demand is up, and readiness is low.</p>
+    <div class="tbl"><table>
+      <tr><th>Signal</th><th>Number</th><th>Source</th></tr>
+      <tr><td>Fresher (0–3 yr) hiring growth</td><td>+15% YoY, Aug 2026</td><td>Naukri JobSpeak <span class="tag v">Verified</span></td></tr>
+      <tr><td>BFSI postings open to ≤3 yrs experience</td><td>98.2% (Mumbai region)</td><td>Apna BFSI report <span class="tag v">Verified</span></td></tr>
+      <tr><td>Growth in entry-level collections jobs</td><td>+34% in FY26</td><td>Apna BFSI report <span class="tag v">Verified</span></td></tr>
+      <tr><td>Freshers who feel interview-ready</td><td>21%</td><td>Apna Interview Readiness Index <span class="tag v">Verified</span></td></tr>
+      <tr><td>NBFC frontline annual attrition</td><td>77%</td><td>TeamLease via Finezza <span class="tag v">Verified</span></td></tr>
+    </table></div>
+    <p>The attrition figure matters most for the business. Someone who joins as a collections officer today is likely job-hunting again within a year, so the same user comes back for every switch.</p>
+
+    <h3>Segments</h3>
+    <div class="tbl"><table>
+      <tr><th>Segment</th><th>Monthly pay</th><th>Main struggle</th><th>Pays for</th></tr>
+      <tr><td><b>A.</b> Fresher, analyst track</td><td>₹25–45k</td><td>SQL/Excel, case rounds, explaining projects</td><td>Packs before placements</td></tr>
+      <tr class="us"><td><b>B.</b> Fresher, field track (beachhead)</td><td>₹15–22k</td><td>Confidence, sales role-play, interview language</td><td>Single mocks</td></tr>
+      <tr class="us"><td><b>C.</b> Switcher, 1–3 yrs (beachhead)</td><td>₹18–70k</td><td>Explaining experience, no time to prepare</td><td>Job-Ready Pass</td></tr>
+      <tr><td><b>D.</b> Employer (NBFCs, banks)</td><td>—</td><td>Early exits; each frontline hire costs ₹50k–1.5 lakh</td><td>Success fee per hire</td></tr>
+    </table></div>
+
+    <h3>Competitors</h3>
+    <div class="tbl"><table>
+      <tr><th></th><th>Language</th><th>Roles</th><th>Depth</th><th>Price</th></tr>
+      <tr><td>ChatGPT (free)</td><td>Any</td><td>Any</td><td>Generic Q&amp;A, no role-play, no benchmark</td><td>Free</td></tr>
+      <tr><td>Apna AI Job Prep</td><td>Hindi + regional</td><td>Entry-level, all</td><td>Generic mocks (7.6 lakh done <span class="tag v">Verified</span>)</td><td>Free</td></tr>
+      <tr><td>Exponent / Pramp</td><td>English</td><td>Tech / PM</td><td>Deep</td><td>$12–79/mo <span class="tag v">Verified</span></td></tr>
+      <tr><td>InterviewBuddy</td><td>English</td><td>General</td><td>Human experts</td><td>~₹1,000–2,500/session</td></tr>
+      <tr class="us"><td><b>HireMate</b></td><td>English + Hindi</td><td><b>BFSI + analyst</b></td><td><b>Role-play + benchmark score</b></td><td><b>Free first, ₹99/mock</b></td></tr>
+    </table></div>
+    <div class="callout">Our survey says the real competitor is ChatGPT, not Apna. That's what respondents already use to prepare. So the pitch isn't "AI mock interviews". It's the things ChatGPT doesn't do: <b>a voice role-play that pushes back, a score against other candidates, and questions taken from how NBFCs actually interview.</b></div>
+  </section>
+
+  <!-- 3 -->
+  <section id="pricing">
+    <h2><span class="num">3</span>Pricing strategy</h2>
+    <p><b>Model:</b> freemium plus small one-time payments, with a time-boxed pass instead of a monthly subscription. Job searching happens in bursts: people prepare hard for a few weeks and then stop. A pass that ends after 90 days fits that pattern, and it never auto-renews on someone who has already got a job.</p>
+    <div class="tiers">
+      <div class="tier"><h4>Free</h4><div class="p">₹0</div><ul><li>Profile</li><li>1 full mock interview</li><li>Basic feedback</li></ul></div>
+      <div class="tier"><h4>Single mock</h4><div class="p">₹99</div><ul><li>1 role-specific mock</li><li>Detailed feedback</li><li>Benchmark score</li></ul></div>
+      <div class="tier"><h4>Interview Pack</h4><div class="p">₹499</div><ul><li>10 mocks (₹50 each)</li><li>Valid 60 days</li></ul></div>
+      <div class="tier best"><h4>Job-Ready Pass ★</h4><div class="p">₹599</div><ul><li>Unlimited mocks for 90 days (fair use: 30)</li><li>Resume review + growth plan</li><li>Shareable score card</li></ul></div>
+    </div>
+    <p class="sub">Add-on: ₹10 AI resume review. It's a deliberately tiny first UPI payment, to build the habit of paying.</p>
+
+    <div class="callout amber"><b>Changed after the survey</b> <span class="tag a">Assumed</span><br>
+      When asked how they'd prefer to pay, 8 of 14 respondents chose "monthly unlimited" and none chose the 10-mock pack. So the ₹599 tier is now framed as <b>unlimited for 90 days</b> instead of "30 mocks". It's the same cost ceiling for us, but it answers what people actually asked for. The ₹499 pack stays for now as a price anchor. If it still sells under 5% of paid orders by month 2, it goes.</div>
+
+    <h3>Justification</h3>
+    <div class="tbl"><table>
+      <tr><th>Check</th><th>Result</th></tr>
+      <tr><td>Affordability: ₹99 / ₹599 as a share of a ₹20k monthly salary</td><td>0.5% / 3%</td></tr>
+      <tr><td>vs a human mock (InterviewBuddy)</td><td>~10–25× cheaper</td></tr>
+      <tr><td>vs Exponent ($12/mo on annual billing <span class="tag v">Verified</span>)</td><td>Priced for Indian entry-level pay, not US tech pay</td></tr>
+      <tr><td>Gross margin, ₹99 mock (AI cost ~₹8–12)</td><td>~90%</td></tr>
+      <tr><td>Gross margin, ₹599 pass at the fair-use cap (30 × ₹10)</td><td>~50%; most users stop well before 30</td></tr>
+    </table></div>
+
+    <h3>Employer side (from month 6)</h3>
+    <div class="tbl"><table>
+      <tr><th>Model</th><th>Price</th><th>Why</th></tr>
+      <tr><td><b>Success fee per hire</b>, paid by the employer</td><td>20% of the hire's first-month salary (≈ ₹3,600 on ₹18k)</td><td>Agencies charge ~8.33% of annual CTC, roughly a full month's salary. HireMate costs about a fifth of that, and only on a joining.</td></tr>
+      <tr><td>Verified candidate pool (later)</td><td>Monthly subscription</td><td>Benchmark scores plus KYC-verified identity and certificates (Aadhaar e-KYC / DigiLocker)</td></tr>
+    </table></div>
+    <div class="callout">Candidates never pay a share of their salary. In our survey, 6 of 14 had been asked to pay money to get a job, and one had actually paid. The draft Private Placement Agency Bill 2025 <span class="tag v">Verified</span> targets exactly these fees. <b>No job guarantees, and no placement fees charged to candidates, ever.</b></div>
+  </section>
+
+  <!-- 4 -->
+  <section id="growth">
+    <h2><span class="num">4</span>Growth strategy: 0 → 10,000 users</h2>
+    <div class="phases">
+      <div class="phase"><div class="sub">Months 1–2 · hand-to-hand</div><div class="r">0 → 1,000</div>
+        <ul><li>Survey waitlist gets 2 free mocks</li><li>5 Tier-2 college "mock interview days" (north Karnataka first)</li><li>WhatsApp / Telegram job groups: a Hindi collections role-play clip</li><li>Referral: both people get 1 free mock</li><li>Founder LinkedIn: one real interview mistake a week</li></ul>
+        <p class="sub" style="margin-top:8px">Budget ₹0–20k · CAC &lt; ₹20</p></div>
+      <div class="phase"><div class="sub">Months 3–4 · social proof</div><div class="r">1k → 5,000</div>
+        <ul><li>Shareable score card ("Top 20% for Collections, Hindi")</li><li>"Got the job" stories in the user's own words</li><li>Hindi Shorts / Reels: "what the manager wants to hear"</li><li>Skilling institutes and bank-exam coaching centres</li></ul>
+        <p class="sub" style="margin-top:8px">Budget ~₹50k · CAC &lt; ₹30</p></div>
+      <div class="phase"><div class="sub">Months 5–6 · paid + employers</div><div class="r">5k → 10,000</div>
+        <ul><li>5–10 Hindi career YouTubers, paid per sign-up</li><li>Meta / Google ads aimed at Tier-2/3 cities and "bank jobs" searches</li><li>WhatsApp nudges: day 1, day 3, and the night before an interview</li><li>2–3 NBFC employer pilots</li></ul>
+        <p class="sub" style="margin-top:8px">Budget ₹2–3 lakh · CAC &lt; ₹40</p></div>
+    </div>
+    <h3>Growth levers</h3>
+    <div class="tbl"><table>
+      <tr><th>Lever</th><th>How it works</th></tr>
+      <tr><td>Viral trigger</td><td>The score card. People share rankings, not practice sessions.</td></tr>
+      <tr><td>Incentive loop</td><td>Referrals are paid in free mocks, which cost ~₹10, not in cash.</td></tr>
+      <tr><td>Network effect</td><td>More users → a sharper benchmark → a more valuable score → a stronger pool → employers pay.</td></tr>
+      <tr><td>Built-in return</td><td>High attrition in field roles brings users back for their next switch.</td></tr>
+    </table></div>
+    <h3>Phase metrics</h3>
+    <div class="tbl"><table>
+      <tr><th>Metric</th><th>Phase 1</th><th>Phase 2</th><th>Phase 3</th></tr>
+      <tr><td>Cumulative sign-ups</td><td>1,000</td><td>5,000</td><td>10,000</td></tr>
+      <tr><td>Activation (sign-up → first mock)</td><td>60%</td><td>60%</td><td>55%</td></tr>
+      <tr><td>Free → paid</td><td>3%</td><td>5%</td><td>7%</td></tr>
+      <tr><td>Referral share of sign-ups</td><td>30%</td><td>25%</td><td>15%</td></tr>
+      <tr><td>30-day repeat (≥ 2 mocks)</td><td>35%</td><td>40%</td><td>40%</td></tr>
+    </table></div>
+  </section>
+
+  <!-- 5 -->
+  <section id="mvp">
+    <h2><span class="num">5</span>MVP strategy and problem validation</h2>
+    <h3>What we did</h3>
+    <p>Market research from four AI tools, cross-checked, with every number used here verified at the original source (6 errors caught and removed). This was followed by a self-hosted survey with a screener, launched 19 Sep, and 7 recorded interviews (5 candidates, 2 HR people) scheduled for 26–28 Sep.</p>
+    <div class="kpis">
+      <div class="kpi"><b>26</b><span>survey starts</span></div>
+      <div class="kpi"><b>14</b><span>completed</span></div>
+      <div class="kpi"><b>6</b><span>in target roles</span></div>
+      <div class="kpi"><b>0</b><span>paid for coaching</span></div>
+    </div>
+    <div class="callout amber">Survey data is <b>directional, not proof</b>. n = 14, and more than half came from my own network (PMs and engineers), which I report separately. The interviews carry the real weight.</div>
+
+    <h3>How they'd prefer to pay (survey)</h3>
+    <div class="bar"><span class="l">Monthly unlimited</span><span class="t"><i style="width:57%"></i></span><span class="n">8</span></div>
+    <div class="bar"><span class="l">Free only</span><span class="t"><i style="width:29%"></i></span><span class="n">4</span></div>
+    <div class="bar"><span class="l">Per session</span><span class="t"><i style="width:7%"></i></span><span class="n">1</span></div>
+    <div class="bar"><span class="l">10-mock pack</span><span class="t"><i style="width:0%"></i></span><span class="n">0</span></div>
+
+    <h3>Hypotheses scorecard</h3>
+    <div class="tbl"><table>
+      <tr><th>#</th><th>Hypothesis</th><th>Signal so far</th><th>Status</th></tr>
+      <tr><td>H1</td><td>Candidates don't prepare in a structured way</td><td>ChatGPT and YouTube are the main tools; nobody paid for coaching</td><td><span class="tag v">Supported</span></td></tr>
+      <tr><td>H2</td><td>Rejected candidates are rarely told why</td><td>Weaker than expected; to probe in the interviews</td><td><span class="tag w">Weak</span></td></tr>
+      <tr><td>H3</td><td>Failure points differ by role</td><td>Too few field-role replies to split by role</td><td><span class="tag a">Open</span></td></tr>
+      <tr><td>H4</td><td>Field roles prefer practising in Hindi / regional languages</td><td>Little demand for Hindi so far, but very few field-role candidates answered</td><td><span class="tag w">Weak</span></td></tr>
+      <tr><td>H5</td><td>Micro-pricing fits</td><td>People want unlimited access for a period, not packs → pricing reframed</td><td><span class="tag a">Changed</span></td></tr>
+      <tr><td>H6</td><td>Candidates distrust paying anyone "to get a job"</td><td>6 of 14 were asked to pay for a job; 1 actually paid</td><td><span class="tag v">Supported</span></td></tr>
+      <tr><td>H7</td><td>Employers would pay for a screened pool</td><td>2 HR interviews, 26–28 Sep</td><td><span class="tag a">Open</span></td></tr>
+    </table></div>
+    <p><b>What that changes:</b> Hindi stays in the MVP, because the field-role audience wasn't reached, but it's no longer the lead message. The lead is <b>role-play depth and the benchmark score</b>, which is the gap ChatGPT leaves.</p>
+
+    <h3>MVP features</h3>
+    <div class="tbl"><table>
+      <tr><th>Feature</th><th>In MVP</th><th>Why it's needed to test product-market fit</th></tr>
+      <tr><td><b>Voice mock interview, 4 roles</b></td><td>Yes</td><td>The core value. Real interviews are spoken, and field roles are judged on how you talk.</td></tr>
+      <tr><td><b>Role-play scenarios</b> (collections call, sales objection, credit case)</td><td>Yes</td><td>The difference from ChatGPT and Apna. If users don't value these, the positioning is wrong.</td></tr>
+      <tr><td><b>Feedback: 3 strengths, 3 fixes, 3-step plan</b></td><td>Yes</td><td>Tests H2: whether knowing what to fix is worth paying for.</td></tr>
+      <tr><td><b>Benchmark score + share card</b></td><td>Yes</td><td>The reason to come back, and the main growth loop.</td></tr>
+      <tr><td>English + Hindi</td><td>Yes</td><td>Tests H4 properly with field-role users.</td></tr>
+      <tr><td>~50 questions per role</td><td>Yes</td><td>Enough for 10+ mocks without repeats; small enough to review by hand.</td></tr>
+      <tr><td>UPI payments</td><td>Yes</td><td>Tests willingness to pay from day one.</td></tr>
+      <tr><td>Employer portal</td><td>No</td><td>Month 6+, once there's a pool worth showing.</td></tr>
+      <tr><td>More languages, video / body-language analysis</td><td>No</td><td>Expensive, and not needed to prove the core idea.</td></tr>
+    </table></div>
+  </section>
+
+  <!-- 6 -->
+  <section id="metrics">
+    <h2><span class="num">6</span>Success metrics</h2>
+    <div class="tbl"><table>
+      <tr><th>Level</th><th>Metric</th><th>Target, month 6</th><th>Why</th></tr>
+      <tr class="us"><td><b>L0</b></td><td><b>Mock interviews completed per week</b></td><td>5,000</td><td>Each completed mock is a user who got value. It moves with sign-ups, activation and repeat use together, so it's hard to fake.</td></tr>
+      <tr><td>L1</td><td>Activation (sign-up → first mock)</td><td>55–60%</td><td>A low number means onboarding or trust is broken.</td></tr>
+      <tr><td>L1</td><td>Free → paid conversion</td><td>7%</td><td>Tests whether the product is worth ₹99.</td></tr>
+      <tr><td>L1</td><td>30-day repeat rate</td><td>40%</td><td>Practice only works when it's repeated.</td></tr>
+      <tr><td>L1</td><td>Blended CAC</td><td>&lt; ₹40</td><td>Growth has to pay for itself.</td></tr>
+      <tr><td>L2</td><td>Feedback helpfulness rating</td><td>≥ 4.2 / 5</td><td>The feedback is the product; this drops before churn shows up.</td></tr>
+      <tr><td>L2</td><td>Score gain, mock 1 → mock 3</td><td>+15%</td><td>Proof that HireMate actually makes people better.</td></tr>
+      <tr><td>L2</td><td>Self-reported interview → offer rate</td><td>Baseline set in month 2</td><td>The outcome users care about, and the number employers will ask for.</td></tr>
+    </table></div>
+  </section>
+
+  <!-- 7 -->
+  <section id="bonus">
+    <h2><span class="num">7</span>Landing page, prototype and promo posts</h2>
+    <h3>Clickable prototype</h3>
+    <p>Pick a role and a language, answer out loud (speech-to-text) or use a sample answer, and get a score, a ranking band, strengths, fixes and a 3-step plan. Collections and Sales work in Hindi too. The scoring is keyword-based, as a stand-in for the LLM.</p>
+    <div class="frame">
+      <div class="bar2"><span>Prototype · mock interview</span><a href="../demo/" target="_blank" rel="noopener">Open full screen ↗</a></div>
+      <iframe src="../demo/" title="HireMate prototype" loading="lazy" allow="microphone"></iframe>
+    </div>
+    <h3>Landing page</h3>
+    <div class="frame">
+      <div class="bar2"><span>Landing page</span><a href="../home/" target="_blank" rel="noopener">Open full screen ↗</a></div>
+      <iframe src="../home/" title="HireMate landing page" loading="lazy"></iframe>
+    </div>
+
+    <h3>Promo posts</h3>
+    <div class="two">
+      <div class="post"><div class="h">LinkedIn · published 19 Sep 2026 (the survey launch)</div>A real pre-launch post that brought in the survey responses above. Tone: founder building in public, asking people who've been through BFSI and analyst interviews to share what went wrong.</div>
+      <div class="post"><div class="h">Reddit · r/IndianWorkplace</div><b>Title:</b> Interviewed for collections / field sales roles at NBFCs? What did they actually ask you?
+
+I'm building a small practice tool for entry-level BFSI interviews (collections, field sales, credit and data analyst). Before building more, I want to get the questions right.
+
+If you've sat one of these in the last year:
+1. What was the one question or role-play that threw you?
+2. Were you told why you didn't get it?
+3. Has anyone ever asked you to pay money to get the job?
+
+There's a free prototype if you want to try it, but I'm more interested in your stories. No sign-up, and I'm not selling anything yet.</div>
+    </div>
+    <h3>Instagram · carousel, 5 slides</h3>
+    <div class="slides">
+      <div class="slide">"Customer ne 3 EMI miss kiye. Aap kya bologe?"</div>
+      <div class="slide">This is a real collections interview question.</div>
+      <div class="slide">Most freshers answer it with a threat. Managers want empathy + a date + an amount.</div>
+      <div class="slide">Practise it out loud. In Hindi or English. Get a score.</div>
+      <div class="slide">HireMate · first mock free · link in bio</div>
+    </div>
+    <div class="post"><div class="h">Caption</div>Collections interview kal hai? 😬 The manager isn't testing your English. They're checking whether you can calm an angry customer and still leave with a date to pay. Practise the real call on HireMate. First mock is free, in Hindi or English. Link in bio.
+#bankjobs #nbfcjobs #collectionsjobs #interviewtips #freshersjobs #hindi</div>
+  </section>
+
+  <!-- 8 -->
+  <section id="risks">
+    <h2><span class="num">8</span>Risks and what would change the plan</h2>
+    <div class="tbl"><table>
+      <tr><th>Risk</th><th>Early sign</th><th>Response</th></tr>
+      <tr><td>"ChatGPT is good enough"</td><td>Activation OK but repeat use under 20%</td><td>Push harder on what ChatGPT can't do: voice role-play, benchmark, employer access</td></tr>
+      <tr><td>Apna adds BFSI role-plays</td><td>Apna launches role-specific mocks</td><td>Move faster on employers; the verified pool is harder to copy</td></tr>
+      <tr><td>Users won't pay for AI feedback</td><td>Conversion under 2% by month 2</td><td>Test ₹49, or shift revenue to employers sooner</td></tr>
+      <tr><td>Hindi voice quality is poor</td><td>Hindi helpfulness rating under 3.5</td><td>Run Hindi as text + speech-to-text first</td></tr>
+      <tr><td>Employers won't pay per hire</td><td>Pilots end with no paid hire</td><td>Switch to a monthly pool subscription</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ask -->
+  <section id="ask">
+    <h2>Feedback I'd value, Sir</h2>
+    <ol class="q">
+      <li><b>Beachhead:</b> is starting with field roles (collections / sales) right, or would analyst roles be an easier first market to reach through colleges?</li>
+      <li><b>Pricing:</b> the survey pointed to "unlimited for a period". Is a 90-day pass at ₹599 the right answer, or should the ₹499 pack go now?</li>
+      <li><b>Employer fee:</b> is 20% of first-month salary, paid by the employer, credible to an NBFC HR head?</li>
+      <li><b>North Star:</b> is "mock interviews completed per week" the right L0, or should it be closer to outcomes (offers)?</li>
+      <li><b>Evidence:</b> with a small survey, what would make the validation section convincing to you?</li>
+    </ol>
+    <div class="row"><a class="btn" href="mailto:cercit@gmail.com?subject=HireMate%20feedback">Send feedback by email</a></div>
+  </section>
+</main>
+</div>
+
+<footer>HireMate is a product concept built for the Masai × IIT Roorkee Product Management program. Survey figures are aggregate only; no respondent details are shown.</footer>
+</body>
+</html>
