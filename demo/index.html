@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HireMate: Mock interview (prototype)</title>
+<meta name="description" content="Try a HireMate mock interview: collections, field sales, credit analyst or data analyst, in English or Hindi.">
+<style>
+  :root{
+    --navy:#0B2545; --blue:#1F6FEB; --blue-soft:#E8F0FE; --ink:#132238; --muted:#5B6B80;
+    --line:#E3E8EF; --bg:#F6F8FB; --ok:#12A150; --ok-soft:#E7F6EE; --warn:#C2410C; --warn-soft:#FFF3EA; --r:16px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans Devanagari",sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px 56px}
+  header{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .mark{width:30px;height:30px;border-radius:9px;background:var(--blue);position:relative}
+  .mark::after{content:"";position:absolute;inset:8px 7px 9px 8px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(-45deg)}
+  .brand b{font-size:19px;color:var(--navy)}
+  .proto{font-size:12px;font-weight:600;color:#8A5A00;background:#FFF4D6;border:1px solid #F2DDA4;padding:4px 10px;border-radius:99px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-top:14px}
+  h1{font-size:26px;line-height:1.2;margin:4px 0 6px;color:var(--navy);letter-spacing:-.4px}
+  h2{font-size:18px;margin:0 0 10px;color:var(--navy)}
+  .muted{color:var(--muted)}
+  .label{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 10px}
+
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .choice{border:1px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;background:#fff;text-align:left;font:inherit;color:inherit}
+  .choice b{display:block;color:var(--navy)}
+  .choice span{font-size:13.5px;color:var(--muted)}
+  .choice.sel{border-color:var(--blue);background:var(--blue-soft)}
+  .choice:disabled{opacity:.45;cursor:not-allowed}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:14px 20px;
+    font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+  .btn.primary{background:var(--blue);color:#fff}
+  .btn.primary:disabled{opacity:.5;cursor:not-allowed}
+  .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .btn.full{width:100%}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .row .btn{flex:1}
+
+  .top{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;color:var(--muted)}
+  .bar{height:6px;background:var(--line);border-radius:99px;margin:8px 0 4px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--blue);transition:width .3s}
+  .bubble{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:14px;font-size:16.5px}
+  .who{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+  .listen{background:none;border:0;color:var(--blue);font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-transform:none;letter-spacing:0;padding:0}
+  textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:inherit;margin-top:14px;resize:vertical}
+  textarea:focus{outline:2px solid var(--blue);outline-offset:1px}
+  .tools{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+  .mic{background:#fff;border:1px solid var(--line);border-radius:99px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;color:var(--navy)}
+  .mic.on{background:#FDECEC;border-color:#F3B6B6;color:#B42318}
+  .linkbtn{background:none;border:0;color:var(--blue);font:inherit;font-size:14px;cursor:pointer;padding:0}
+  .small{font-size:13px;color:var(--muted)}
+
+  .round-fb{border-radius:14px;padding:14px 16px;margin-top:14px}
+  .round-fb.good{background:var(--ok-soft)}
+  .round-fb.mid{background:var(--warn-soft)}
+  .chip{display:inline-block;font-weight:700;border-radius:99px;padding:2px 10px;font-size:13px;margin-right:6px}
+  .good .chip{background:var(--ok);color:#fff}
+  .mid .chip{background:var(--warn);color:#fff}
+  .round-fb ul{margin:8px 0 0;padding-left:20px}
+
+  .result-head{display:flex;gap:18px;align-items:center}
+  .ring{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto}
+  .ring span{width:76px;height:76px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:28px;font-weight:700;color:var(--navy)}
+  .bench{font-size:14px;background:var(--blue-soft);color:var(--navy);border-radius:10px;padding:8px 12px;display:inline-block;margin-top:6px}
+  .rounds{margin-top:6px}
+  .rline{display:grid;grid-template-columns:80px 1fr 38px;gap:10px;align-items:center;font-size:14px;margin:8px 0}
+  .rline .bar{margin:0}
+  ul.list{padding-left:0;list-style:none;margin:0}
+  ul.list li{padding:8px 0 8px 28px;position:relative;border-bottom:1px solid var(--line)}
+  ul.list li:last-child{border-bottom:0}
+  ul.good li::before{content:"✓";position:absolute;left:4px;color:var(--ok);font-weight:700}
+  ul.fix li::before{content:"→";position:absolute;left:4px;color:var(--warn);font-weight:700}
+  ul.plan li::before{counter-increment:p;content:counter(p);position:absolute;left:0;top:9px;width:20px;height:20px;border-radius:6px;background:var(--blue-soft);color:var(--blue);font-size:12px;font-weight:700;display:grid;place-items:center}
+  ul.plan{counter-reset:p}
+  .note{font-size:13px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;margin-top:14px}
+  .hidden{display:none}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;transition:.2s;pointer-events:none}
+  .toast.show{opacity:1}
+  @media (max-width:560px){ .choices{grid-template-columns:1fr} h1{font-size:23px} .card{padding:18px} .result-head{flex-direction:column;align-items:flex-start} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="../home/"><div class="mark"></div><b>HireMate</b></a>
+    <span class="proto">Prototype</span>
+  </header>
+
+  <!-- 1. SETUP -->
+  <section id="setup">
+    <div class="card">
+      <h1>Try a mock interview</h1>
+      <p class="muted">3 rounds, about 10 minutes. Answer by speaking or typing. At the end you get a score and the 3 things to fix.</p>
+
+      <div class="label">1 · Your role</div>
+      <div class="choices" id="roleChoices"></div>
+
+      <div class="label">2 · Language</div>
+      <div class="choices" id="langChoices">
+        <button class="choice" data-lang="en"><b>English</b><span>All roles</span></button>
+        <button class="choice" data-lang="hi"><b>हिंदी</b><span>Collections and field sales</span></button>
+      </div>
+
+      <button class="btn primary full" id="startBtn" style="margin-top:20px" disabled>Start interview</button>
+      <p class="small" style="margin-top:10px">Nothing you type or say is saved or sent anywhere. Voice input uses your browser's own speech recognition.</p>
+    </div>
+  </section>
+
+  <!-- 2. INTERVIEW -->
+  <section id="interview" class="hidden">
+    <div class="card">
+      <div class="top"><span id="roleTag"></span><span id="roundTag"></span></div>
+      <div class="bar"><i id="roundBar"></i></div>
+
+      <div class="bubble">
+        <div class="who"><span id="whoLabel">Interviewer</span><button class="listen" id="listenBtn">🔊 Listen</button></div>
+        <div id="question"></div>
+      </div>
+
+      <textarea id="answer" placeholder="Type your answer here, or tap Speak and answer out loud."></textarea>
+      <div class="tools">
+        <button class="mic" id="micBtn">🎤 Speak</button>
+        <button class="linkbtn" id="sampleBtn">Use a sample answer</button>
+      </div>
+      <p class="small" id="micNote"></p>
+
+      <div id="roundFeedback"></div>
+
+      <div class="row">
+        <button class="btn primary" id="submitBtn">Submit answer</button>
+        <button class="btn primary hidden" id="nextBtn">Next round →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. RESULTS -->
+  <section id="results" class="hidden">
+    <div class="card">
+      <div class="result-head">
+        <div class="ring" id="ring"><span id="totalScore">0</span></div>
+        <div>
+          <h1 id="resultTitle">Your result</h1>
+          <div class="bench" id="bench"></div>
+        </div>
+      </div>
+      <div class="label">Round scores</div>
+      <div class="rounds" id="roundScores"></div>
+    </div>
+
+    <div class="card"><h2>What you did well</h2><ul class="list good" id="strengths"></ul></div>
+    <div class="card"><h2>3 things to fix</h2><ul class="list fix" id="fixes"></ul></div>
+    <div class="card"><h2>Your next 3 practice steps</h2><ul class="list plan" id="plan"></ul></div>
+
+    <div class="row">
+      <button class="btn ghost" id="againBtn">Try this role again</button>
+      <button class="btn ghost" id="otherBtn">Try another role</button>
+    </div>
+    <div class="row">
+      <button class="btn ghost" id="copyBtn">Copy my score card</button>
+      <a class="btn primary" href="../?src=demo">Get early access</a>
+    </div>
+
+    <div class="note"><b>About this prototype:</b> scoring checks whether your answer covers the points interviewers for this role look for. The ranking is illustrative. The launch version uses a voice AI interviewer that asks follow-up questions and compares your score with other candidates for the same role.</div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------------------------------------------------------
+   Interview content. Each question lists the key ideas an
+   interviewer listens for; an idea counts as covered if any of its
+   keywords (English or Hindi) appears in the answer.
+---------------------------------------------------------------- */
+const ROLES = {
+  collections: {
+    name: "Collections Officer", sub: "Recovery calls, difficult customers", langs: ["en","hi"],
+    rounds: [
+      { q:{en:"Tell me about yourself, and why you want to work in collections.",
+           hi:"अपने बारे में बताइए, और आप कलेक्शन में क्यों काम करना चाहते हैं?"},
+        who:"Interviewer",
+        ideas:[
+          {en:"a line about your studies or work so far", hi:"अपनी पढ़ाई या अनुभव के बारे में एक लाइन",
+           kw:["studied","graduat","b.com","bcom","degree","experience","worked","college","पढ़ाई","ग्रेजुएट","बी.कॉम","अनुभव","काम किया"]},
+          {en:"why collections suits you", hi:"कलेक्शन आपको क्यों सूट करता है",
+           kw:["patien","people","talk","communicat","convinc","field","target","challenge","pressure","calm","लोगों","बात","धैर्य","टारगेट","दबाव","शांत"]},
+          {en:"showing you know the job is about customers and recovery", hi:"यह दिखाना कि काम ग्राहक और वसूली से जुड़ा है",
+           kw:["recover","customer","emi","loan","repay","overdue","वसूली","ग्राहक","लोन","बकाया"]}],
+        sample:{en:"I have completed my B.Com and worked six months in a call centre. I like talking to people and I stay calm under pressure, so I think collections suits me.",
+                hi:"मैंने बी.कॉम किया है और छह महीने कॉल सेंटर में काम किया है। मुझे लोगों से बात करना अच्छा लगता है और मैं दबाव में शांत रहता हूँ।"}},
+      { q:{en:"Role-play: I'm Ramesh. I've missed three EMIs on my bike loan and my shop has been closed for a month. Why do you keep calling me?",
+           hi:"रोल-प्ले: मैं रमेश हूँ। मेरी बाइक लोन की तीन EMI बाकी हैं और एक महीने से दुकान बंद है। आप बार-बार फ़ोन क्यों कर रहे हैं?"},
+        who:"Interviewer, playing the customer",
+        ideas:[
+          {en:"showing you understand his situation", hi:"ग्राहक की स्थिति समझना",
+           kw:["understand","sorry","difficult","tough","situation","समझ","माफ़","मुश्किल"]},
+          {en:"offering a way forward, like a part-payment", hi:"आगे का रास्ता देना, जैसे थोड़ा भुगतान",
+           kw:["part","partial","some amount","instal","plan","थोड़ा","कुछ पैसे","किस्त","प्लान"]},
+          {en:"fixing an exact amount and date", hi:"सही राशि और तारीख तय करना",
+           kw:["date","by friday","by monday","by the","₹","rupees","तारीख","रुपये"," तक "]},
+          {en:"calmly explaining what unpaid EMIs will do to his credit score", hi:"शांति से बताना कि EMI न भरने का असर क्रेडिट स्कोर पर होगा",
+           kw:["cibil","credit score","bureau","charges","penalty","future loan","सिबिल","क्रेडिट","पेनल्टी","चार्ज"]}],
+        sample:{en:"I understand sir, it is a difficult time. Can you pay some amount this week? We can make a plan for the rest.",
+                hi:"मैं समझता हूँ सर, मुश्किल समय है। क्या आप इस हफ़्ते थोड़ा भुगतान कर सकते हैं? बाकी के लिए हम प्लान बना लेंगे।"}},
+      { q:{en:"A customer shouts at you and threatens to complain about you. What do you do?",
+           hi:"ग्राहक आप पर चिल्लाता है और आपकी शिकायत करने की धमकी देता है। आप क्या करेंगे?"},
+        who:"Interviewer",
+        ideas:[
+          {en:"staying calm and listening", hi:"शांत रहना और सुनना",
+           kw:["calm","listen","patien","polite","शांत","सुन","धैर्य"]},
+          {en:"staying respectful: no threats, no pressure tactics", hi:"सम्मान से बात करना, कोई धमकी या दबाव नहीं",
+           kw:["respect","no threat","not threaten","fair","dignity","rbi","code","policy","सम्मान","इज़्ज़त","धमकी नहीं","नियम"]},
+          {en:"escalating or recording it properly", hi:"सही तरीके से सीनियर को बताना या रिकॉर्ड करना",
+           kw:["supervisor","manager","senior","escalat","record","note","report","सीनियर","मैनेजर","रिपोर्ट","रिकॉर्ड"]}],
+        sample:{en:"I will stay calm and listen to him. I will not argue. After the call I will inform my manager.",
+                hi:"मैं शांत रहूँगा और उनकी बात सुनूँगा। बहस नहीं करूँगा। कॉल के बाद मैनेजर को बताऊँगा।"}}
+    ]
+  },
+
+  sales: {
+    name: "Field Sales / Relationship Executive", sub: "Pitching, objections, targets", langs: ["en","hi"],
+    rounds: [
+      { q:{en:"Sell me this two-wheeler loan in 60 seconds.",
+           hi:"60 सेकंड में मुझे यह टू-व्हीलर लोन बेचिए।"},
+        who:"Interviewer",
+        ideas:[
+          {en:"the benefit to the customer", hi:"ग्राहक का फायदा",
+           kw:["benefit","own","take the bike","save","easy","convenien","फायदा","आसान","बचत","घर ले"]},
+          {en:"numbers: EMI, tenure or rate", hi:"EMI, अवधि या ब्याज के नंबर",
+           kw:["emi","per month","a month","tenure","₹","rupees","interest","rate","महीना","ब्याज","रुपये"]},
+          {en:"quick approval and simple documents", hi:"जल्दी अप्रूवल और कम दस्तावेज़",
+           kw:["quick","fast","same day","documents","kyc","aadhaar","pan","approval","जल्दी","दस्तावेज़","आधार","पैन","अप्रूवल"]},
+          {en:"a clear ask to go ahead", hi:"साफ़ तरीके से आगे बढ़ने को कहना",
+           kw:["shall we","can we","start","apply","today","fill","sign","आज","शुरू","फॉर्म","अप्लाई"]}],
+        sample:{en:"Sir, with this loan you can take the bike home this week. EMI starts at around 2,500 a month, and approval is quick with just Aadhaar and PAN.",
+                hi:"सर, इस लोन से आप इसी हफ़्ते बाइक घर ले जा सकते हैं। EMI लगभग 2,500 रुपये महीना है, और सिर्फ़ आधार और पैन से जल्दी अप्रूवल हो जाता है।"}},
+      { q:{en:"Role-play: another bank has offered me a lower interest rate. Why should I take your loan?",
+           hi:"रोल-प्ले: दूसरे बैंक ने मुझे कम ब्याज पर ऑफर दिया है। मैं आपका लोन क्यों लूँ?"},
+        who:"Interviewer, playing the customer",
+        ideas:[
+          {en:"acknowledging the other offer", hi:"दूसरे ऑफर को मानना",
+           kw:["understand","fair","good offer","right","compare","समझ","सही","तुलना"]},
+          {en:"comparing total cost, not just the rate", hi:"सिर्फ़ ब्याज नहीं, कुल खर्च की तुलना",
+           kw:["total","processing","fee","charges","hidden","overall","cost","कुल","प्रोसेसिंग","फीस","चार्ज","खर्च"]},
+          {en:"your service advantage", hi:"आपकी सर्विस का फायदा",
+           kw:["fast","quick","service","branch","support","approval","dealer","सर्विस","जल्दी","ब्रांच","डीलर"]},
+          {en:"asking for the decision", hi:"फैसले के लिए पूछना",
+           kw:["shall","can we","today","proceed","apply","आज","आगे बढ़","अप्लाई"]}],
+        sample:{en:"I understand, sir. But please compare the total cost including processing fees. Our approval is also faster.",
+                hi:"मैं समझता हूँ सर। लेकिन प्रोसेसिंग फीस मिलाकर कुल खर्च की तुलना कीजिए। हमारा अप्रूवल भी जल्दी होता है।"}},
+      { q:{en:"It's the 25th. Your monthly target is 20 files and you have 8. What will you do?",
+           hi:"आज 25 तारीख है। महीने का टारगेट 20 फाइल है और अभी 8 हुई हैं। आप क्या करेंगे?"},
+        who:"Interviewer",
+        ideas:[
+          {en:"a daily plan with numbers", hi:"नंबर के साथ रोज़ का प्लान",
+           kw:["per day","daily","each day","12","remaining","two a day","2 a day","रोज़","हर दिन","बाकी"]},
+          {en:"where the leads will come from", hi:"लीड कहाँ से आएँगी",
+           kw:["dealer","lead","referral","old customer","walk-in","showroom","follow","डीलर","लीड","रेफरल","पुराने ग्राहक","शोरूम"]},
+          {en:"closing the likeliest cases first", hi:"जो केस पक्के हैं उन्हें पहले पूरा करना",
+           kw:["priorit","hot","ready","close first","pending","पहले","तैयार","पेंडिंग"]},
+          {en:"asking for help early", hi:"जल्दी मदद माँगना",
+           kw:["manager","team","help","support","tell my","मैनेजर","टीम","मदद"]}],
+        sample:{en:"I will call all my pending leads and visit the dealer daily. I will try to close the ready files first.",
+                hi:"मैं सारी पेंडिंग लीड को कॉल करूँगा और रोज़ डीलर के पास जाऊँगा। जो फाइल तैयार हैं उन्हें पहले पूरा करूँगा।"}}
+    ]
+  },
+
+  credit: {
+    name: "Credit Analyst", sub: "Assessing applicants, red flags", langs: ["en"],
+    rounds: [
+      { q:{en:"Walk me through how you would assess a salaried applicant for a car loan."},
+        who:"Interviewer",
+        ideas:[
+          {en:"income and how stable it is", kw:["income","salary","slip","stabil","employer","job"]},
+          {en:"the bureau check", kw:["cibil","bureau","credit score","dpd","history"]},
+          {en:"existing obligations and FOIR", kw:["foir","obligation","existing emi","debt","ratio"]},
+          {en:"the vehicle, LTV and down payment", kw:["ltv","loan to value","down payment","on-road","ex-showroom","vehicle"]},
+          {en:"verifying documents and the bank statement", kw:["bank statement","verify","document","kyc","bounce"]}],
+        sample:{en:"I would check his salary slips and bank statement, then his CIBIL score, and see if the EMI is affordable."}},
+      { q:{en:"Case: the applicant earns ₹45,000 a month, already pays a ₹12,000 EMI, and the new car loan EMI would be ₹14,000. Would you approve it?"},
+        who:"Interviewer",
+        ideas:[
+          {en:"working out FOIR, about 58%", kw:["58","57","foir","26,000","26000","ratio","percent","%"]},
+          {en:"comparing it with the policy limit", kw:["policy","limit","norm","50","55","60","threshold"]},
+          {en:"a fix: longer tenure, bigger down payment or a co-applicant", kw:["tenure","down payment","co-applicant","coapplicant","reduce","lower emi","smaller loan"]},
+          {en:"a clear decision", kw:["approve","reject","decline","conditional","refer"]}],
+        sample:{en:"His total EMI would be 26,000 which is high compared to his salary. I would ask for a higher down payment."}},
+      { q:{en:"The bureau score is 780, but the bank statement shows three cheque bounces last quarter. What do you do?"},
+        who:"Interviewer",
+        ideas:[
+          {en:"not relying on the score alone", kw:["score alone","despite","even though","but ","not enough","recent"]},
+          {en:"finding out why the cheques bounced", kw:["reason","why","clarif","explanation","ask","investigat","technical"]},
+          {en:"checking the pattern in the statement", kw:["balance","pattern","statement","months","salary credit","average"]},
+          {en:"a decision with conditions, or a referral", kw:["refer","deviation","condition","nach","approve with","decline","flag","senior"]}],
+        sample:{en:"The score is good but bounces are a risk. I would ask the customer why the cheques bounced before deciding."}}
+    ]
+  },
+
+  data: {
+    name: "Data Analyst", sub: "Projects, metrics, SQL logic", langs: ["en"],
+    rounds: [
+      { q:{en:"Tell me about a project where your analysis changed a decision."},
+        who:"Interviewer",
+        ideas:[
+          {en:"the problem you were solving", kw:["problem","question","issue","goal","wanted to"]},
+          {en:"the data and tools you used", kw:["sql","excel","python","power bi","tableau","data","dashboard"]},
+          {en:"what you found", kw:["found","insight","showed","noticed","discover"]},
+          {en:"the result, with a number", kw:["%","percent","increas","reduc","saved","₹","lakh","hours","result"]}],
+        sample:{en:"I made a sales dashboard in Excel and Power BI. It showed which region was falling behind and the manager used it in reviews."}},
+      { q:{en:"Loan disbursals dropped 15% last month. How would you find out why?"},
+        who:"Interviewer",
+        ideas:[
+          {en:"checking the data is right first", kw:["data issue","correct","validat","check the data","missing","pipeline"]},
+          {en:"breaking it down by region, product or channel", kw:["region","branch","product","channel","segment","dealer","break"]},
+          {en:"looking at the funnel: applications, approvals, rejections", kw:["funnel","application","approval","rejection","conversion","stage"]},
+          {en:"comparing with seasonality or outside events", kw:["season","last year","festival","trend","competitor","policy change","rate"]}],
+        sample:{en:"I would compare this month with last month by region and product to see where the drop came from."}},
+      { q:{en:"Explain the logic of a SQL query that finds the top 5 branches by disbursal amount this month."},
+        who:"Interviewer",
+        ideas:[
+          {en:"filtering to this month", kw:["where","this month","date","month"]},
+          {en:"summing the amount per branch", kw:["sum","group by","total"]},
+          {en:"sorting from highest to lowest", kw:["order by","desc","highest","sort"]},
+          {en:"keeping only the top 5", kw:["limit","top 5","top five"]}],
+        sample:{en:"I will take the disbursal table, sum the amount for each branch, sort it from highest to lowest and take the top 5."}}
+    ]
+  }
+};
+
+/* ---------- state ---------- */
+let role = null, lang = null, round = 0, results = [];
+const $ = s => document.querySelector(s);
+const show = id => ["setup","interview","results"].forEach(s => $("#"+s).classList.toggle("hidden", s!==id));
+
+/* ---------- setup screen ---------- */
+const roleBox = $("#roleChoices");
+Object.entries(ROLES).forEach(([key,r]) => {
+  const b = document.createElement("button");
+  b.className = "choice"; b.dataset.role = key;
+  b.innerHTML = `<b>${r.name}</b><span>${r.sub}</span>`;
+  roleBox.appendChild(b);
+});
+roleBox.addEventListener("click", e => {
+  const b = e.target.closest(".choice"); if(!b) return;
+  role = b.dataset.role;
+  roleBox.querySelectorAll(".choice").forEach(c => c.classList.toggle("sel", c===b));
+  const hiBtn = document.querySelector('[data-lang="hi"]');
+  hiBtn.disabled = !ROLES[role].langs.includes("hi");
+  if(hiBtn.disabled && lang==="hi"){ lang=null; hiBtn.classList.remove("sel"); }
+  updateStart();
+});
+$("#langChoices").addEventListener("click", e => {
+  const b = e.target.closest(".choice"); if(!b || b.disabled) return;
+  lang = b.dataset.lang;
+  $("#langChoices").querySelectorAll(".choice").forEach(c => c.classList.toggle("sel", c===b));
+  updateStart();
+});
+function updateStart(){ $("#startBtn").disabled = !(role && lang); }
+$("#startBtn").addEventListener("click", () => { round = 0; results = []; loadRound(); show("interview"); });
+
+/* ---------- interview screen ---------- */
+function loadRound(){
+  const r = ROLES[role], q = r.rounds[round];
+  $("#roleTag").textContent = `${r.name} · ${lang==="hi"?"हिंदी":"English"}`;
+  $("#roundTag").textContent = `Round ${round+1} of ${r.rounds.length}`;
+  $("#roundBar").style.width = `${(round/r.rounds.length)*100}%`;
+  $("#whoLabel").textContent = q.who;
+  $("#question").textContent = q.q[lang];
+  $("#answer").value = ""; $("#answer").disabled = false;
+  $("#roundFeedback").innerHTML = "";
+  $("#submitBtn").classList.remove("hidden"); $("#nextBtn").classList.add("hidden");
+  $("#sampleBtn").classList.remove("hidden");
+  $("#nextBtn").textContent = round === r.rounds.length-1 ? "See my result →" : "Next round →";
+  stopMic();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function scoreAnswer(text, q){
+  const t = " " + text.toLowerCase() + " ";
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  const covered = [], missed = [];
+  q.ideas.forEach(idea => (idea.kw.some(k => t.includes(k.toLowerCase())) ? covered : missed).push(idea));
+  let score = words < 8 ? 25 : Math.round(38 + (covered.length/q.ideas.length)*50 + (words >= 25 ? 8 : 0));
+  score = Math.max(20, Math.min(96, score));
+  return { score, covered, missed, words };
+}
+const label = idea => (lang==="hi" && idea.hi) ? idea.hi : idea.en;
+
+$("#submitBtn").addEventListener("click", () => {
+  const text = $("#answer").value.trim();
+  if(text.split(/\s+/).filter(Boolean).length < 3){ toast("Say or type a little more first."); return; }
+  stopMic();
+  const q = ROLES[role].rounds[round];
+  const res = scoreAnswer(text, q);
+  results.push(res);
+  const good = res.score >= 65;
+  $("#roundFeedback").innerHTML = `
+    <div class="round-fb ${good?"good":"mid"}">
+      <span class="chip">${res.score}</span><b>${good ? "Good answer." : "Getting there."}</b>
+      ${res.covered.length ? `<div style="margin-top:6px">You covered: ${res.covered.map(label).join("; ")}.</div>` : ""}
+      ${res.missed.length ? `<div style="margin-top:6px">Also cover: ${res.missed.map(label).join("; ")}.</div>` : ""}
+      ${res.words < 8 ? `<div style="margin-top:6px">Your answer was very short. Interviewers expect 3–5 sentences.</div>` : ""}
+    </div>`;
+  $("#answer").disabled = true;
+  $("#submitBtn").classList.add("hidden"); $("#sampleBtn").classList.add("hidden");
+  $("#nextBtn").classList.remove("hidden");
+});
+
+$("#nextBtn").addEventListener("click", () => {
+  round++;
+  if(round < ROLES[role].rounds.length) loadRound(); else showResults();
+});
+
+$("#sampleBtn").addEventListener("click", () => {
+  $("#answer").value = ROLES[role].rounds[round].sample[lang];
+  toast("Sample answer added. Submit it to see the feedback, or edit it first.");
+});
+
+/* ---------- voice: read the question aloud ---------- */
+$("#listenBtn").addEventListener("click", () => {
+  if(!("speechSynthesis" in window)){ toast("Your browser can't read aloud."); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance($("#question").textContent);
+  u.lang = lang==="hi" ? "hi-IN" : "en-IN"; u.rate = .95;
+  speechSynthesis.speak(u);
+});
+
+/* ---------- voice: answer by speaking ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, listening = false, baseText = "";
+if(!SR){
+  $("#micBtn").classList.add("hidden");
+  $("#micNote").textContent = "Voice input isn't available in this browser. Type your answer, or open this page in Chrome.";
+}
+function startMic(){
+  rec = new SR();
+  rec.lang = lang==="hi" ? "hi-IN" : "en-IN";
+  rec.interimResults = true; rec.continuous = true;
+  baseText = $("#answer").value ? $("#answer").value.trim() + " " : "";
+  rec.onresult = e => {
+    let finalT = "", interim = "";
+    for(let i=0;i<e.results.length;i++){
+      (e.results[i].isFinal ? (finalT += e.results[i][0].transcript + " ") : (interim += e.results[i][0].transcript));
+    }
+    $("#answer").value = baseText + finalT + interim;
+  };
+  rec.onerror = ev => { toast(ev.error==="not-allowed" ? "Microphone permission was blocked." : "Voice input stopped."); stopMic(); };
+  rec.onend = () => { if(listening) stopMic(); };
+  rec.start(); listening = true;
+  $("#micBtn").classList.add("on"); $("#micBtn").textContent = "■ Stop";
+}
+function stopMic(){
+  listening = false;
+  if(rec){ try{ rec.stop(); }catch(_){} rec = null; }
+  $("#micBtn").classList.remove("on"); $("#micBtn").textContent = "🎤 Speak";
+}
+$("#micBtn").addEventListener("click", () => listening ? stopMic() : startMic());
+
+/* ---------- results ---------- */
+function showResults(){
+  const r = ROLES[role];
+  const total = Math.round(results.reduce((a,b)=>a+b.score,0)/results.length);
+  $("#totalScore").textContent = total;
+  $("#ring").style.background = `conic-gradient(var(--blue) 0 ${total}%, var(--line) ${total}% 100%)`;
+  $("#resultTitle").textContent = `${r.name} · ${lang==="hi"?"हिंदी":"English"}`;
+  const band = total>=80 ? "top 20%" : total>=70 ? "top 35%" : total>=60 ? "top 50%" : "lower half";
+  $("#bench").textContent = `Illustrative ranking: ${band} of candidates for this role`;
+
+  $("#roundScores").innerHTML = results.map((res,i)=>`
+    <div class="rline"><span>Round ${i+1}</span><div class="bar"><i style="width:${res.score}%"></i></div><b>${res.score}</b></div>`).join("");
+
+  const strengths = [];
+  results.forEach((res,i) => { if(res.covered.length) strengths.push(`Round ${i+1}: ${res.covered.map(label).join(", ")}.`); });
+  if(!strengths.length) strengths.push("You completed all three rounds. That already puts you ahead of most people, who never practise out loud.");
+  $("#strengths").innerHTML = strengths.map(s=>`<li>${s}</li>`).join("");
+
+  // three fixes: missed ideas, taken from the weakest rounds first
+  const order = results.map((res,i)=>({res,i})).sort((a,b)=>a.res.score-b.res.score);
+  const fixes = [];
+  order.forEach(({res,i}) => res.missed.forEach(m => { if(fixes.length<3) fixes.push(`Round ${i+1}: add ${label(m)}.`); }));
+  order.forEach(({res,i}) => { if(fixes.length<3 && res.words<25) fixes.push(`Round ${i+1}: give a fuller answer, 3–5 sentences with one example.`); });
+  if(!fixes.length) fixes.push("Strong all round. Next, practise the same answers out loud against a 60-second timer.");
+  $("#fixes").innerHTML = fixes.slice(0,3).map(s=>`<li>${s}</li>`).join("");
+
+  const weakest = order[0].i;
+  const plan = [
+    `Redo round ${weakest+1} out loud, covering the points above, and aim for a score over 70.`,
+    lang==="hi" ? "Practise the role-play round once in English too. Many interviews switch languages midway."
+                : (r.langs.includes("hi") ? "Try the same interview in Hindi. Field interviews often switch languages midway." : "Say your project story in under 90 seconds with one number in it."),
+    "Do one full mock a day for the next 5 days, then compare your score with today's."
+  ];
+  $("#plan").innerHTML = plan.map(s=>`<li>${s}</li>`).join("");
+
+  show("results");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+$("#againBtn").addEventListener("click", () => { round=0; results=[]; loadRound(); show("interview"); });
+$("#otherBtn").addEventListener("click", () => { show("setup"); window.scrollTo({top:0}); });
+$("#copyBtn").addEventListener("click", async () => {
+  const txt = `I scored ${$("#totalScore").textContent}/100 on a HireMate mock interview for ${ROLES[role].name} (${lang==="hi"?"Hindi":"English"}). Try one: ${location.href}`;
+  try{ await navigator.clipboard.writeText(txt); toast("Score card copied."); }
+  catch(_){ toast("Couldn't copy. Take a screenshot instead."); }
+});
+
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2600); }
+</script>
+</body>
+</html>

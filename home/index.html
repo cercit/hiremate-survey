@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HireMate: Practise the real interview</title>
+<meta name="description" content="AI mock interviews for BFSI and analyst roles, in English and Hindi. Practise the collections call, the loan pitch, the credit case, and know exactly what to fix.">
+<style>
+  :root{
+    --navy:#0B2545; --navy-2:#13315C; --blue:#1F6FEB; --blue-soft:#E8F0FE;
+    --ink:#132238; --muted:#5B6B80; --line:#E3E8EF; --bg:#FFFFFF; --bg-2:#F6F8FB;
+    --ok:#12A150; --warn:#C2410C; --r:16px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans Devanagari",sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  section{padding:72px 0}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:600;color:var(--blue);background:var(--blue-soft);
+    padding:6px 12px;border-radius:99px;letter-spacing:.2px}
+  h1{font-size:44px;line-height:1.12;letter-spacing:-1px;margin:18px 0 16px;color:var(--navy)}
+  h2{font-size:32px;line-height:1.2;letter-spacing:-.6px;margin:0 0 12px;color:var(--navy)}
+  h3{font-size:18px;margin:0 0 6px;color:var(--navy)}
+  .lede{font-size:18px;color:var(--muted);max-width:620px}
+  .sub{color:var(--muted)}
+  .center{text-align:center}
+  .center .lede{margin:0 auto}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .mark{width:30px;height:30px;border-radius:9px;background:var(--blue);position:relative;flex:0 0 auto}
+  .mark::after{content:"";position:absolute;inset:8px 7px 9px 8px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(-45deg)}
+  .brand b{font-size:19px;color:var(--navy);letter-spacing:-.3px}
+  .links{display:flex;gap:26px;align-items:center;font-size:15px}
+  .links a{text-decoration:none;color:var(--muted)}
+  .links a:hover{color:var(--navy)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 22px;border-radius:12px;
+    font-weight:600;text-decoration:none;font-size:16px;border:1px solid transparent;cursor:pointer}
+  .btn.primary{background:var(--blue);color:#fff}
+  .btn.primary:hover{background:#185ACC}
+  .btn.ghost{background:#fff;color:var(--navy);border-color:var(--line)}
+  .btn.ghost:hover{border-color:#C7D6EA}
+  .btn.small{padding:9px 16px;font-size:14px}
+
+  /* hero */
+  .hero{padding:64px 0 56px;background:linear-gradient(180deg,#F3F7FE 0%,#fff 100%)}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .hint{font-size:13px;color:var(--muted);margin-top:12px}
+  .hi{font-size:17px;color:var(--navy-2);margin-top:6px}
+
+  .phone{background:#fff;border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:0 24px 60px rgba(11,37,69,.12);max-width:380px;margin-left:auto}
+  .phone-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin-bottom:14px}
+  .pill{font-size:12px;background:var(--blue-soft);color:var(--blue);padding:4px 10px;border-radius:99px;font-weight:600}
+  .bubble{border-radius:16px;padding:12px 14px;margin-bottom:10px;font-size:15px}
+  .bubble.ai{background:var(--bg-2);border:1px solid var(--line)}
+  .bubble.me{background:var(--blue);color:#fff;margin-left:34px}
+  .who{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;opacity:.7;margin-bottom:3px}
+  .score{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:6px}
+  .ring{width:54px;height:54px;border-radius:50%;background:conic-gradient(var(--blue) 0 72%,var(--line) 72% 100%);display:grid;place-items:center;flex:0 0 auto}
+  .ring span{width:42px;height:42px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:700;color:var(--navy)}
+  .fix{font-size:13.5px;color:var(--muted)}
+  .fix b{color:var(--warn)}
+
+  /* problem */
+  .problem{background:var(--navy);color:#fff}
+  .problem h2{color:#fff}
+  .problem .lede{color:#C9D6EA}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
+  .pcard{background:var(--navy-2);border:1px solid #23466F;border-radius:var(--r);padding:22px}
+  .pcard h3{color:#fff}
+  .pcard p{color:#C9D6EA;margin:0}
+
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
+  .step{border:1px solid var(--line);border-radius:var(--r);padding:24px;background:#fff}
+  .num{width:34px;height:34px;border-radius:10px;background:var(--blue-soft);color:var(--blue);font-weight:700;display:grid;place-items:center;margin-bottom:14px}
+  .step p{margin:0;color:var(--muted)}
+
+  /* roles */
+  .roles{background:var(--bg-2)}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:34px}
+  .role{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;display:flex;flex-direction:column}
+  .role .tag{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px}
+  .role .q{font-size:14.5px;background:var(--bg-2);border-left:3px solid var(--blue);padding:10px 12px;border-radius:8px;margin:12px 0 0;flex:1}
+  .role .lang{font-size:12.5px;color:var(--muted);margin-top:12px}
+
+  /* compare */
+  table{width:100%;border-collapse:collapse;margin-top:30px;font-size:15px}
+  th,td{padding:14px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{font-size:13px;color:var(--muted);font-weight:600}
+  td.y{color:var(--ok);font-weight:600}
+  td.n{color:var(--muted)}
+  th.us,td.us{background:var(--blue-soft)}
+  .tablewrap{overflow-x:auto;border-radius:var(--r)}
+
+  /* trust */
+  .trust{border:1px solid #F3D9C8;background:#FFF8F3;border-radius:var(--r);padding:26px 28px;display:flex;gap:18px;align-items:flex-start}
+  .shield{width:44px;height:44px;border-radius:12px;background:#FDE7D8;display:grid;place-items:center;flex:0 0 auto;font-size:22px}
+  .trust h3{color:#8A2E07}
+  .trust p{margin:0;color:#6B4A36}
+
+  /* pricing */
+  .grid-price{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:34px}
+  .price{border:1px solid var(--line);border-radius:var(--r);padding:24px;background:#fff;display:flex;flex-direction:column}
+  .price.best{border:2px solid var(--blue);position:relative}
+  .price.best::before{content:"Best value";position:absolute;top:-12px;left:20px;background:var(--blue);color:#fff;font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px}
+  .amt{font-size:32px;font-weight:700;color:var(--navy);letter-spacing:-.5px;margin:8px 0 2px}
+  .per{font-size:13.5px;color:var(--muted)}
+  .price ul{padding:0;margin:16px 0 0;list-style:none;font-size:14.5px;flex:1}
+  .price li{padding:5px 0 5px 24px;position:relative}
+  .price li::before{content:"";position:absolute;left:2px;top:12px;width:10px;height:6px;border-left:2px solid var(--ok);border-bottom:2px solid var(--ok);transform:rotate(-45deg)}
+  .note{font-size:13px;color:var(--muted);margin-top:18px}
+
+  /* employers */
+  .emp{background:linear-gradient(135deg,var(--navy) 0%,#1A3F6E 100%);color:#fff;border-radius:22px;padding:40px;display:grid;grid-template-columns:1.3fr .7fr;gap:30px;align-items:center}
+  .emp h2{color:#fff}
+  .emp p{color:#C9D6EA;margin:0}
+  .emp .stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:20px}
+  .emp .stat b{display:block;font-size:26px;color:#fff}
+  .emp .stat span{font-size:13.5px;color:#C9D6EA}
+
+  /* faq */
+  details{border-bottom:1px solid var(--line);padding:18px 0}
+  summary{font-weight:600;cursor:pointer;color:var(--navy);font-size:16.5px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";float:right;color:var(--muted);font-weight:400;font-size:22px;line-height:1}
+  details[open] summary::after{content:"–"}
+  details p{color:var(--muted);margin:10px 0 0}
+
+  .final{background:var(--bg-2)}
+  footer{border-top:1px solid var(--line);padding:28px 0;font-size:13.5px;color:var(--muted)}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+  @media (max-width:960px){
+    .hero .wrap{grid-template-columns:1fr}
+    .phone{margin:10px auto 0}
+    .grid4,.grid-price{grid-template-columns:repeat(2,1fr)}
+    .emp{grid-template-columns:1fr}
+  }
+  @media (max-width:680px){
+    section{padding:52px 0}
+    h1{font-size:33px}
+    h2{font-size:26px}
+    .lede{font-size:16.5px}
+    .links a:not(.btn){display:none}
+    .grid3,.steps,.grid4,.grid-price{grid-template-columns:1fr}
+    .emp{padding:28px 22px}
+    .trust{flex-direction:column;padding:22px}
+    .cta-row .btn{flex:1 1 100%}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><div class="mark"></div><b>HireMate</b></a>
+    <div class="links">
+      <a href="#how">How it works</a>
+      <a href="#roles">Roles</a>
+      <a href="#pricing">Pricing</a>
+      <a class="btn primary small" href="../demo/">Try a free mock</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">For BFSI and analyst jobs · English + हिंदी</span>
+      <h1>Practise the real interview before the real interview.</h1>
+      <p class="lede">HireMate plays the interviewer for your exact role: the collections call, the loan pitch, the credit case. Then it tells you what to fix.</p>
+      <p class="hi">असली इंटरव्यू से पहले, असली जैसी प्रैक्टिस। हिंदी में भी।</p>
+      <div class="cta-row">
+        <a class="btn primary" href="../demo/">Try a free mock interview →</a>
+        <a class="btn ghost" href="../?src=landing">Get early access</a>
+      </div>
+      <p class="hint">No sign-up for the demo · Takes 5 minutes</p>
+    </div>
+
+    <div class="phone" aria-label="Example of a HireMate mock interview">
+      <div class="phone-top"><span>Mock interview · Round 2 of 3</span><span class="pill">Collections · हिंदी</span></div>
+      <div class="bubble ai"><div class="who">Interviewer (as customer)</div>मेरी तीन EMI बाकी हैं। एक महीने से दुकान बंद है। आप बार-बार फ़ोन क्यों कर रहे हैं?</div>
+      <div class="bubble me"><div class="who">You</div>मैं समझता हूँ सर। क्या हम इस हफ़्ते थोड़ा भुगतान और बाकी के लिए एक तारीख तय कर सकते हैं?</div>
+      <div class="score">
+        <div class="ring"><span>72</span></div>
+        <div class="fix"><b>Fix next:</b> say the exact amount and date back to the customer, and confirm it before you end the call.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="problem">
+  <div class="wrap">
+    <h2>Most people prepare with YouTube and ChatGPT.</h2>
+    <p class="lede">Neither will play the angry customer, and nobody tells you why you didn't get the job.</p>
+    <div class="grid3">
+      <div class="pcard"><h3>Generic questions</h3><p>"Tell me about yourself" practice doesn't help when the real round is a recovery call or a credit case.</p></div>
+      <div class="pcard"><h3>No feedback</h3><p>After a rejection you usually get "we'll get back to you", so the same mistake follows you into the next interview.</p></div>
+      <div class="pcard"><h3>English only</h3><p>Many field-role interviews happen in Hindi or a regional language. Most practice tools don't.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap center">
+    <h2>How it works</h2>
+    <p class="lede">Three steps, about 15 minutes, on your phone.</p>
+    <div class="steps" style="text-align:left">
+      <div class="step"><div class="num">1</div><h3>Pick your role and language</h3><p>Collections, field sales, credit analyst or data analyst. English or Hindi.</p></div>
+      <div class="step"><div class="num">2</div><h3>Talk to the interviewer</h3><p>Answer out loud. The interviewer asks follow-ups and plays the customer in role-play rounds.</p></div>
+      <div class="step"><div class="num">3</div><h3>Get your score and fixes</h3><p>A score for each round, what you did well, the 3 things to fix, and where you rank against others for the same role.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="roles" id="roles">
+  <div class="wrap">
+    <div class="center">
+      <h2>Built for the jobs that hire the most freshers</h2>
+      <p class="lede">Each mock follows how banks and NBFCs actually interview for that role.</p>
+    </div>
+    <div class="grid4">
+      <div class="role"><div class="tag">Field role</div><h3>Collections Officer</h3><p class="sub">Recovery-call role-play, handling an angry customer, staying within fair-practice rules.</p><p class="q">"I've missed three EMIs. My shop is closed. Why do you keep calling?"</p><p class="lang">English · हिंदी</p></div>
+      <div class="role"><div class="tag">Field role</div><h3>Field Sales / Relationship Executive</h3><p class="sub">Product pitch, objection handling, planning against a month-end target.</p><p class="q">"Another bank offered me a lower rate. Why should I take yours?"</p><p class="lang">English · हिंदी</p></div>
+      <div class="role"><div class="tag">Analyst role</div><h3>Credit Analyst</h3><p class="sub">Assessing an applicant, FOIR and obligations, spotting red flags in a file.</p><p class="q">"Bureau score is 780, but there are three cheque bounces last quarter. What do you do?"</p><p class="lang">English</p></div>
+      <div class="role"><div class="tag">Analyst role</div><h3>Data Analyst</h3><p class="sub">Explaining your projects, diagnosing a metric drop, talking through SQL logic.</p><p class="q">"Disbursals dropped 15% last month. How would you find out why?"</p><p class="lang">English</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="center">
+      <h2>Why not just use ChatGPT?</h2>
+      <p class="lede">You can. But you'd have to build the interview yourself, every time.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>YouTube</th><th>ChatGPT</th><th>Generic mock apps</th><th class="us">HireMate</th></tr></thead>
+        <tbody>
+          <tr><td>Role-play for your exact job</td><td class="n">No</td><td class="n">Only if you write the prompt</td><td class="n">Mostly generic</td><td class="us y">Ready for 4 BFSI roles</td></tr>
+          <tr><td>Practise out loud, in Hindi</td><td class="n">No</td><td class="n">Possible, not built for it</td><td class="n">Some</td><td class="us y">Yes</td></tr>
+          <tr><td>Tells you exactly what to fix</td><td class="n">No</td><td class="n">If you ask</td><td class="n">Basic</td><td class="us y">3 fixes per mock</td></tr>
+          <tr><td>Score against others for the same role</td><td class="n">No</td><td class="n">No</td><td class="n">Rare</td><td class="us y">Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="trust">
+      <div class="shield">🛡</div>
+      <div>
+        <h3>No job guarantees. No placement fees. Ever.</h3>
+        <p>HireMate is a practice tool, not a placement agency. We will never ask you to pay to get a job. If anyone does, it's a scam: don't pay, and report it on the national cyber-crime helpline, 1930.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="roles" id="pricing">
+  <div class="wrap">
+    <div class="center">
+      <h2>Start free. Pay only when you're preparing.</h2>
+      <p class="lede">Job hunting comes in bursts, so there's no subscription you forget to cancel.</p>
+    </div>
+    <div class="grid-price">
+      <div class="price"><h3>Free</h3><div class="amt">₹0</div><div class="per">to start</div>
+        <ul><li>Your profile</li><li>1 full mock interview</li><li>Basic feedback</li></ul></div>
+      <div class="price"><h3>Single mock</h3><div class="amt">₹99</div><div class="per">per interview</div>
+        <ul><li>1 role-specific mock</li><li>Detailed feedback</li><li>Benchmark score</li></ul></div>
+      <div class="price"><h3>Interview pack</h3><div class="amt">₹499</div><div class="per">10 mocks · 60 days</div>
+        <ul><li>₹50 per mock</li><li>All 4 roles</li><li>English + Hindi</li></ul></div>
+      <div class="price best"><h3>Job-Ready plan</h3><div class="amt">₹599</div><div class="per">90 days</div>
+        <ul><li>Up to 30 mocks</li><li>Resume review</li><li>Personal growth plan</li><li>Shareable score card</li></ul></div>
+    </div>
+    <p class="note center">Launch pricing, UPI accepted. Resume review on its own: ₹10.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="emp">
+      <div>
+        <span class="eyebrow" style="background:rgba(255,255,255,.12);color:#fff">For banks and NBFCs</span>
+        <h2 style="margin-top:14px">Hiring for field roles?</h2>
+        <p>Meet candidates who have already cleared a role-play for your role, with a score you can compare. Pay only when someone joins. Employer pilots open after launch.</p>
+      </div>
+      <div class="stat"><b>Pay per hire</b><span>No job-posting fees, no subscriptions during the pilot.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="final" style="padding-top:56px">
+  <div class="wrap" style="max-width:780px">
+    <h2 class="center">Questions</h2>
+    <details><summary>Is the demo a real AI interviewer?</summary><p>The demo is a clickable prototype. It uses your browser's voice input where available and scores your answers against what interviewers look for, to show how the product will work. The launch version uses a full voice AI interviewer.</p></details>
+    <details><summary>Do I need to speak, or can I type?</summary><p>Both work. Speaking is closer to a real interview, so we recommend it once you're comfortable.</p></details>
+    <details><summary>Which languages?</summary><p>English and Hindi at launch for field roles. More regional languages come next, starting with the ones our users ask for most.</p></details>
+    <details><summary>Will HireMate get me a job?</summary><p>No product can promise that, and you should be wary of anyone who does. HireMate helps you walk into the interview prepared and knowing what to fix.</p></details>
+    <div class="center" style="margin-top:34px">
+      <a class="btn primary" href="../demo/">Try a free mock interview →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span><b style="color:var(--navy)">HireMate</b> · Practice. Feedback. Get hired.</span>
+    <span>A product concept from the IIT Roorkee × Masai Product Management program.</span>
+  </div>
+</footer>
+
+</body>
+</html>
