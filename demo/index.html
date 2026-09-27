@@ -93,6 +93,11 @@
   .themebtn{width:36px;height:36px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--navy);font-size:17px;line-height:1;cursor:pointer;display:inline-grid;place-items:center;flex:0 0 auto;padding:0}
   .themebtn:hover{border-color:var(--blue)}
   textarea,input[type=text]{background:var(--card);color:var(--ink)}
+  .mine{background:var(--blue-soft);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:10px 0 0 34px;font-size:15.5px}
+  .push{border-color:var(--blue)}
+  .flag{background:var(--rec-bg);border:1px solid var(--rec-line);color:var(--rec-ink);border-radius:12px;padding:10px 12px;margin-top:8px;font-size:14px}
+  ul.list li.ok::before{content:"✓";position:absolute;left:4px;color:var(--ok);font-weight:700}
+  ul.list li.bad::before{content:"!";position:absolute;left:6px;color:var(--rec-ink);font-weight:800}
 </style>
 </head>
 <body>
@@ -106,7 +111,7 @@
   <section id="setup">
     <div class="card">
       <h1>Try a mock interview</h1>
-      <p class="muted">3 rounds, about 10 minutes. Answer by speaking or typing. At the end you get a score and the 3 things to fix.</p>
+      <p class="muted">3 rounds, about 10 minutes. The interviewer pushes back on every answer, like a real branch manager. Speak or type. At the end you get a score, a rule check and the 3 things to fix.</p>
 
       <div class="label">1 · Your role</div>
       <div class="choices" id="roleChoices"></div>
@@ -132,6 +137,7 @@
         <div class="who"><span id="whoLabel">Interviewer</span><button class="listen" id="listenBtn">🔊 Listen</button></div>
         <div id="question"></div>
       </div>
+      <div id="thread"></div>
 
       <textarea id="answer" placeholder="Type your answer here, or tap Speak and answer out loud."></textarea>
       <div class="tools">
@@ -163,6 +169,7 @@
       <div class="rounds" id="roundScores"></div>
     </div>
 
+    <div class="card"><h2>Rule check</h2><ul class="list" id="rulecheck"></ul></div>
     <div class="card"><h2>What you did well</h2><ul class="list good" id="strengths"></ul></div>
     <div class="card"><h2>3 things to fix</h2><ul class="list fix" id="fixes"></ul></div>
     <div class="card"><h2>Your next 3 practice steps</h2><ul class="list plan" id="plan"></ul></div>
@@ -176,17 +183,23 @@
       <a class="btn primary" href="../?src=demo">Get early access</a>
     </div>
 
-    <div class="note"><b>About this prototype:</b> scoring checks whether your answer covers the points interviewers for this role look for. The ranking is illustrative. The launch version uses a voice AI interviewer that asks follow-up questions and compares your score with other candidates for the same role.</div>
+    <div class="note"><b>About this prototype:</b> scoring checks whether your answer covers the points interviewers for this role look for. The rule check uses RBI's guidelines on recovery agents (Oct 2022) and fair-selling practice. The ranking is illustrative. The launch version uses a voice AI interviewer that improvises its follow-ups and compares your score with other candidates for the same role.</div>
   </section>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
 /* ---------------------------------------------------------------
-   Interview content. Each question lists the key ideas an
-   interviewer listens for; an idea counts as covered if any of its
-   keywords (English or Hindi) appears in the answer.
+   Interview content, from the verified question bank
+   (research/verified-question-bank.md). Each round is a scenario
+   plus one push-back. An idea counts as covered if any of its
+   keywords (English or Hindi) appears in the answer. A red line is
+   crossed if any of its keywords appears and none of its "unless"
+   words do, e.g. "call at 7:30" without "not" or "8".
 ---------------------------------------------------------------- */
+const NOT = [" not "," never ","won't","will not","can't","cannot","don't","नहीं"," ना "];
+const SUP = ["supervisor","manager","senior","escalat","record","note","report","सीनियर","मैनेजर","रिपोर्ट","रिकॉर्ड"];
+
 const ROLES = {
   collections: {
     name: "Collections Officer", sub: "Recovery calls, difficult customers", langs: ["en","hi"],
@@ -201,34 +214,88 @@ const ROLES = {
            kw:["patien","people","talk","communicat","convinc","field","target","challenge","pressure","calm","लोगों","बात","धैर्य","टारगेट","दबाव","शांत"]},
           {en:"showing you know the job is about customers and recovery", hi:"यह दिखाना कि काम ग्राहक और वसूली से जुड़ा है",
            kw:["recover","customer","emi","loan","repay","overdue","वसूली","ग्राहक","लोन","बकाया"]}],
-        sample:{en:"I have completed my B.Com and worked six months in a call centre. I like talking to people and I stay calm under pressure, so I think collections suits me.",
-                hi:"मैंने बी.कॉम किया है और छह महीने कॉल सेंटर में काम किया है। मुझे लोगों से बात करना अच्छा लगता है और मैं दबाव में शांत रहता हूँ।"}},
-      { q:{en:"Role-play: I'm Ramesh. I've missed three EMIs on my bike loan and my shop has been closed for a month. Why do you keep calling me?",
-           hi:"रोल-प्ले: मैं रमेश हूँ। मेरी बाइक लोन की तीन EMI बाकी हैं और एक महीने से दुकान बंद है। आप बार-बार फ़ोन क्यों कर रहे हैं?"},
+        sample:{en:"I have completed my B.Com and worked six months in a call centre. I like talking to people and I stay calm under pressure, so I think collections suits me. I understand the job is about helping customers repay their EMIs.",
+                hi:"मैंने बी.कॉम किया है और छह महीने कॉल सेंटर में काम किया है। मुझे लोगों से बात करना अच्छा लगता है और मैं दबाव में शांत रहता हूँ। मैं समझता हूँ कि यह काम ग्राहकों से EMI की वसूली का है।"},
+        push:{
+          q:{en:"Customers will shout at you every day, and you'll be out on your bike in sun and rain. Why won't you quit in the first month?",
+             hi:"ग्राहक रोज़ आप पर चिल्लाएँगे, और आपको धूप-बारिश में बाइक पर घूमना होगा। आप पहले ही महीने में नौकरी क्यों नहीं छोड़ेंगे?"},
+          ideas:[
+            {en:"a realistic picture of the job: field, travel, targets", hi:"काम की असली तस्वीर: फील्ड, सफ़र, टारगेट",
+             kw:["field","travel","sun","rain","bike","target","rejection","shout","धूप","बारिश","फील्ड","बाइक","टारगेट"]},
+            {en:"how you'll handle the pressure", hi:"दबाव को कैसे संभालेंगे",
+             kw:["calm","personally","patien","handle","pressure","शांत","दिल पर","धैर्य","दबाव","संभाल"]},
+            {en:"a real reason to stay", hi:"टिकने की असली वजह",
+             kw:["family","grow","learn","career","earn","incentive","promotion","team leader","परिवार","सीख","कमाई","इंसेंटिव","आगे बढ़","टीम लीडर"]},
+            {en:"an example from your past", hi:"पहले का कोई उदाहरण",
+             kw:["example","once","before","earlier","call centre","when i","पहले","एक बार","जब मैं","कॉल सेंटर"]}],
+          sample:{en:"I know this job means riding my bike in sun and rain, and some customers will shout. I won't take it personally. In my call centre job I handled angry callers calmly. My family depends on me and I want to become a team leader, so I will stay.",
+                  hi:"मुझे पता है कि इस काम में धूप-बारिश में बाइक पर घूमना होगा और कुछ ग्राहक चिल्लाएँगे। मैं इसे दिल पर नहीं लूँगा। कॉल सेंटर में मैंने गुस्से वाले ग्राहकों को शांति से संभाला है। मेरा परिवार मुझ पर निर्भर है और मैं टीम लीडर बनना चाहता हूँ, इसलिए मैं टिकूँगा।"}}},
+
+      { q:{en:"Role-play: I'm Ramesh. I lost my job two months ago and I've missed three EMIs on my bike loan. I have no money. Why do you keep calling me?",
+           hi:"रोल-प्ले: मैं रमेश हूँ। दो महीने पहले मेरी नौकरी चली गई और बाइक लोन की तीन EMI बाकी हैं। मेरे पास पैसे नहीं हैं। आप बार-बार फ़ोन क्यों कर रहे हैं?"},
         who:"Interviewer, playing the customer",
         ideas:[
           {en:"showing you understand his situation", hi:"ग्राहक की स्थिति समझना",
-           kw:["understand","sorry","difficult","tough","situation","समझ","माफ़","मुश्किल"]},
-          {en:"offering a way forward, like a part-payment", hi:"आगे का रास्ता देना, जैसे थोड़ा भुगतान",
-           kw:["part","partial","some amount","instal","plan","थोड़ा","कुछ पैसे","किस्त","प्लान"]},
+           kw:["understand","sorry","difficult","tough","hard","situation","समझ","माफ़","मुश्किल"]},
+          {en:"finding out what he can actually pay", hi:"पता करना कि वह असल में कितना दे सकता है",
+           kw:["family","any income","earning","support","savings","new job","how much can","कोई आमदनी","परिवार","नई नौकरी","बचत","कितना दे"]},
+          {en:"offering a way forward within company options", hi:"कंपनी के विकल्पों में आगे का रास्ता",
+           kw:["part","partial","some amount","instal","plan","option","restructur","branch","थोड़ा","कुछ पैसे","किस्त","प्लान","विकल्प"]},
           {en:"fixing an exact amount and date", hi:"सही राशि और तारीख तय करना",
-           kw:["date","by friday","by monday","by the","₹","rupees","तारीख","रुपये"," तक "]},
-          {en:"calmly explaining what unpaid EMIs will do to his credit score", hi:"शांति से बताना कि EMI न भरने का असर क्रेडिट स्कोर पर होगा",
-           kw:["cibil","credit score","bureau","charges","penalty","future loan","सिबिल","क्रेडिट","पेनल्टी","चार्ज"]}],
-        sample:{en:"I understand sir, it is a difficult time. Can you pay some amount this week? We can make a plan for the rest.",
-                hi:"मैं समझता हूँ सर, मुश्किल समय है। क्या आप इस हफ़्ते थोड़ा भुगतान कर सकते हैं? बाकी के लिए हम प्लान बना लेंगे।"}},
-      { q:{en:"A customer shouts at you and threatens to complain about you. What do you do?",
-           hi:"ग्राहक आप पर चिल्लाता है और आपकी शिकायत करने की धमकी देता है। आप क्या करेंगे?"},
+           kw:["date","by friday","by monday","by the","₹","rupees","तारीख","रुपये"," तक "]}],
+        red:[{kw:["police","jail","legal action","seize","pick up the bike","take the bike","tell your family","call your family","neighbour","पुलिस","जेल","बाइक उठा","बाइक ले जा","परिवार को बता","पड़ोस"], unless:NOT,
+              en:"Threats, or bringing family and neighbours into it, break RBI's rules for recovery agents: no intimidation and no intruding on family privacy.",
+              hi:"धमकी देना, या परिवार-पड़ोसियों को बीच में लाना, RBI के रिकवरी नियमों के खिलाफ है: कोई डराना-धमकाना नहीं, परिवार की निजता में दखल नहीं।"}],
+        sample:{en:"I understand, Ramesh ji, losing a job is very hard. Is anyone in the family earning, or do you expect a new job soon? Can you pay ₹1,500 by Friday? I will check with my branch what options we have for the rest.",
+                hi:"मैं समझता हूँ रमेश जी, नौकरी जाना बहुत मुश्किल होता है। क्या परिवार में कोई कमा रहा है, या जल्दी नई नौकरी की उम्मीद है? क्या आप शुक्रवार तक ₹1,500 दे सकते हैं? बाकी के लिए मैं ब्रांच से विकल्प पूछूँगा।"},
+        push:{
+          q:{en:"Stop calling me! If you call again, I'll complain to RBI.",
+             hi:"मुझे फ़ोन मत करो! फिर से किया तो मैं RBI में शिकायत करूँगा।"},
+          who:"Customer pushes back",
+          ideas:[
+            {en:"staying calm, not arguing", hi:"शांत रहना, बहस नहीं",
+             kw:["calm","sorry","understand","respect","शांत","माफ़","समझ","सम्मान"]},
+            {en:"accepting his right to complain", hi:"शिकायत के उसके हक को मानना",
+             kw:["right","complain","grievance","customer care","हक","शिकायत","अधिकार"]},
+            {en:"agreeing a time or channel that suits him", hi:"उसकी सुविधा का समय या तरीका तय करना",
+             kw:["what time","convenient","when can","message","whatsapp","suits you","समय","कब","मैसेज","व्हाट्सऐप"]},
+            {en:"noting it for your manager", hi:"मैनेजर के लिए नोट करना", kw:SUP}],
+          red:[{kw:["go ahead","do whatever","i don't care","complain anywhere","जो करना है","कहीं भी शिकायत","कर लो शिकायत"], unless:[],
+                en:"Daring the customer to complain turns a recovery call into a dispute. Customers have the right to complain; log it and follow the grievance process.",
+                hi:"ग्राहक को शिकायत करने की चुनौती देना बात बिगाड़ता है। ग्राहक को शिकायत का हक है; इसे नोट करें और शिकायत-प्रक्रिया अपनाएँ।"}],
+          sample:{en:"I'm sorry you're upset, sir, and you have every right to complain. I only want to find a solution with you. What time suits you for a short call, or shall I send the details on WhatsApp? I'll also note this for my manager.",
+                  hi:"माफ़ कीजिए सर, आप परेशान हैं, और आपको शिकायत करने का पूरा हक है। मैं बस आपके साथ हल निकालना चाहता हूँ। छोटी सी बात के लिए आपको कौन सा समय ठीक रहेगा, या मैं व्हाट्सऐप पर मैसेज भेज दूँ? मैं यह बात अपने मैनेजर को भी बताऊँगा।"}}},
+
+      { q:{en:"It's the last day of the month. Your manager says: 'This account is critical. Call the customer at 7:30 tomorrow morning.' What do you do?",
+           hi:"महीने का आखिरी दिन है। मैनेजर कहते हैं: 'यह अकाउंट ज़रूरी है। कल सुबह 7:30 बजे ग्राहक को फ़ोन करो।' आप क्या करेंगे?"},
         who:"Interviewer",
         ideas:[
-          {en:"staying calm and listening", hi:"शांत रहना और सुनना",
-           kw:["calm","listen","patien","polite","शांत","सुन","धैर्य"]},
-          {en:"staying respectful: no threats, no pressure tactics", hi:"सम्मान से बात करना, कोई धमकी या दबाव नहीं",
-           kw:["respect","no threat","not threaten","fair","dignity","rbi","code","policy","सम्मान","इज़्ज़त","धमकी नहीं","नियम"]},
-          {en:"escalating or recording it properly", hi:"सही तरीके से सीनियर को बताना या रिकॉर्ड करना",
-           kw:["supervisor","manager","senior","escalat","record","note","report","सीनियर","मैनेजर","रिपोर्ट","रिकॉर्ड"]}],
-        sample:{en:"I will stay calm and listen to him. I will not argue. After the call I will inform my manager.",
-                hi:"मैं शांत रहूँगा और उनकी बात सुनूँगा। बहस नहीं करूँगा। कॉल के बाद मैनेजर को बताऊँगा।"}}
+          {en:"knowing recovery calls are allowed only 8 a.m. to 7 p.m.", hi:"यह जानना कि वसूली कॉल सिर्फ़ सुबह 8 से शाम 7 तक हो सकती हैं",
+           kw:["8","eight","7 pm","7 p.m","calling hours","आठ","8 बजे"]},
+          {en:"telling your manager politely", hi:"मैनेजर को विनम्रता से बताना",
+           kw:["tell my manager","tell him","explain","politely","inform","remind","मैनेजर को","समझा","बताऊँगा"]},
+          {en:"a plan that stays within the rules", hi:"नियमों के अंदर रहकर प्लान",
+           kw:["at 8","after 8","8 am","8:00","8 sharp","visit","message","8 बजे के बाद","सुबह 8","घर जाकर"]}],
+        red:[{kw:["call at 7:30","call him at 7:30","i will call early","7:30 बजे फ़ोन करूँगा","7:30 बजे कॉल","yes sir","ok sir","ठीक है सर"], unless:NOT.concat(["8","rbi","rule","नियम","आठ"]),
+              en:"RBI bars recovery calls before 8 a.m. and after 7 p.m. A manager's instruction doesn't change that.",
+              hi:"RBI के नियम के अनुसार सुबह 8 से पहले और शाम 7 के बाद वसूली कॉल नहीं कर सकते। मैनेजर के कहने से नियम नहीं बदलता।"}],
+        sample:{en:"I will politely tell my manager that RBI rules don't allow recovery calls before 8 a.m. I'll call the customer at 8 sharp, and if he doesn't pick up, I'll visit him in the morning.",
+                hi:"मैं मैनेजर को विनम्रता से बताऊँगा कि RBI के नियम सुबह 8 बजे से पहले वसूली कॉल की अनुमति नहीं देते। मैं ठीक 8 बजे फ़ोन करूँगा, और न उठाए तो सुबह उसके घर जाऊँगा।"},
+        push:{
+          q:{en:"You call at 8. His brother picks up: 'He's not here. What is this about?'",
+             hi:"आप 8 बजे फ़ोन करते हैं। उसका भाई उठाता है: 'वो यहाँ नहीं है। किस बारे में है?'"},
+          who:"Interviewer, playing the brother",
+          ideas:[
+            {en:"not revealing the loan", hi:"लोन की बात न बताना",
+             kw:["personal","only with him","private","confidential","directly","निजी","उन्हीं से","सिर्फ़ उनसे"]},
+            {en:"leaving your name and a callback number", hi:"अपना नाम और वापस फ़ोन का नंबर देना",
+             kw:["call back","call me","my name","number","ask him to","वापस फ़ोन","नाम","नंबर"]},
+            {en:"staying polite", hi:"विनम्र रहना", kw:["thank","please","sir","धन्यवाद","कृपया","जी"]}],
+          red:[{kw:["emi","loan","overdue","dues","payment","finance","ईएमआई","लोन","बकाया","किस्त","पेमेंट"], unless:NOT.concat(["without","बिना"]),
+                en:"Telling a relative about the loan breaks confidentiality and RBI's rule against intruding on family members' privacy.",
+                hi:"रिश्तेदार को लोन के बारे में बताना गोपनीयता और RBI के नियम, दोनों के खिलाफ है।"}],
+          sample:{en:"It's a personal matter, sir, I can only discuss it with him. Could you please ask him to call me back on this number? My name is Ravi. Thank you.",
+                  hi:"यह निजी बात है जी, मैं सिर्फ़ उन्हीं से बात कर सकता हूँ। कृपया उनसे कहिए कि इस नंबर पर वापस फ़ोन करें। मेरा नाम रवि है। धन्यवाद।"}}}
     ]
   },
 
@@ -247,22 +314,59 @@ const ROLES = {
            kw:["quick","fast","same day","documents","kyc","aadhaar","pan","approval","जल्दी","दस्तावेज़","आधार","पैन","अप्रूवल"]},
           {en:"a clear ask to go ahead", hi:"साफ़ तरीके से आगे बढ़ने को कहना",
            kw:["shall we","can we","start","apply","today","fill","sign","आज","शुरू","फॉर्म","अप्लाई"]}],
-        sample:{en:"Sir, with this loan you can take the bike home this week. EMI starts at around 2,500 a month, and approval is quick with just Aadhaar and PAN.",
-                hi:"सर, इस लोन से आप इसी हफ़्ते बाइक घर ले जा सकते हैं। EMI लगभग 2,500 रुपये महीना है, और सिर्फ़ आधार और पैन से जल्दी अप्रूवल हो जाता है।"}},
-      { q:{en:"Role-play: another bank has offered me a lower interest rate. Why should I take your loan?",
-           hi:"रोल-प्ले: दूसरे बैंक ने मुझे कम ब्याज पर ऑफर दिया है। मैं आपका लोन क्यों लूँ?"},
+        sample:{en:"Sir, with this loan you can take the bike home this week. EMI starts at around ₹2,500 a month, and approval is quick with just Aadhaar and PAN. Shall we start the form today?",
+                hi:"सर, इस लोन से आप इसी हफ़्ते बाइक घर ले जा सकते हैं। EMI लगभग 2,500 रुपये महीना है, और सिर्फ़ आधार और पैन से जल्दी अप्रूवल हो जाता है। क्या आज ही फॉर्म शुरू करें?"},
+        push:{
+          q:{en:"Hmm. Let me think about it and I'll call you.", hi:"हम्म। मैं सोचकर बताता हूँ।"},
+          who:"Customer pushes back",
+          ideas:[
+            {en:"asking what's holding them back", hi:"पूछना कि किस बात पर रुके हैं",
+             kw:["what","which part","concern","doubt","worry","मन में","कौन सी बात","चिंता","शंका","क्या"]},
+            {en:"offering to clear the doubt right now", hi:"अभी शंका दूर करने की पेशकश",
+             kw:["explain","show","calculate","right now","now","अभी","समझा","दिखा"]},
+            {en:"agreeing a specific follow-up", hi:"अगली बात का पक्का समय तय करना",
+             kw:["tomorrow","call you","visit","what time","at 6","कल","फ़ोन करूँ","समय"]}],
+          red:[{kw:["offer ends today","only today","last day of the offer","आज ही खत्म","सिर्फ़ आज"], unless:["if ","genuine","actually","अगर"],
+                en:"Inventing a deadline to rush a customer is mis-selling. Mention an end date only if it's real.",
+                hi:"ग्राहक पर जल्दबाज़ी के लिए झूठी डेडलाइन बताना गलत बिक्री है। तारीख तभी बताएँ जब वह सच हो।"}],
+          sample:{en:"Of course, sir. May I ask what you'd like to think about: the EMI, the documents or the rate? I can calculate the EMI for you right now. Otherwise, can I call you tomorrow at 6?",
+                  hi:"ज़रूर सर। क्या मैं पूछ सकता हूँ कि आप किस बात पर सोचना चाहते हैं: EMI, दस्तावेज़ या ब्याज? मैं अभी EMI निकालकर दिखा सकता हूँ। वरना क्या कल शाम 6 बजे फ़ोन करूँ?"}}},
+
+      { q:{en:"Role-play: another bank is offering me 10.5%. You're at 11.5%. Why should I take your loan?",
+           hi:"रोल-प्ले: दूसरा बैंक मुझे 10.5% दे रहा है। आप 11.5% पर हैं। मैं आपका लोन क्यों लूँ?"},
         who:"Interviewer, playing the customer",
         ideas:[
           {en:"acknowledging the other offer", hi:"दूसरे ऑफर को मानना",
            kw:["understand","fair","good offer","right","compare","समझ","सही","तुलना"]},
           {en:"comparing total cost, not just the rate", hi:"सिर्फ़ ब्याज नहीं, कुल खर्च की तुलना",
-           kw:["total","processing","fee","charges","hidden","overall","cost","कुल","प्रोसेसिंग","फीस","चार्ज","खर्च"]},
+           kw:["total","processing","fee","charges","pre-closure","foreclosure","overall","cost","कुल","प्रोसेसिंग","फीस","चार्ज","खर्च"]},
           {en:"your service advantage", hi:"आपकी सर्विस का फायदा",
            kw:["fast","quick","service","branch","support","approval","dealer","सर्विस","जल्दी","ब्रांच","डीलर"]},
           {en:"asking for the decision", hi:"फैसले के लिए पूछना",
-           kw:["shall","can we","today","proceed","apply","आज","आगे बढ़","अप्लाई"]}],
-        sample:{en:"I understand, sir. But please compare the total cost including processing fees. Our approval is also faster.",
-                hi:"मैं समझता हूँ सर। लेकिन प्रोसेसिंग फीस मिलाकर कुल खर्च की तुलना कीजिए। हमारा अप्रूवल भी जल्दी होता है।"}},
+           kw:["shall","can we","today","proceed","apply","आज","अभी","आगे बढ़","अप्लाई","देखें"]}],
+        red:[{kw:["their bank is bad","they are cheating","they will cheat","fraud bank","वो बैंक बेकार","वो धोखा"], unless:[],
+              en:"Running down a competitor without evidence loses trust and can be misleading. Compare facts, not reputations.",
+              hi:"बिना सबूत दूसरे बैंक की बुराई करना भरोसा तोड़ता है। तथ्यों की तुलना करें।"}],
+        sample:{en:"I understand, sir, 10.5% is a good rate. But please compare the total cost: processing fee and pre-closure charges. Our approval is also faster, often the same day. Shall we compare both offers side by side now?",
+                hi:"मैं समझता हूँ सर, 10.5% अच्छा रेट है। लेकिन प्रोसेसिंग फीस और फोरक्लोज़र चार्ज मिलाकर कुल खर्च की तुलना कीजिए। हमारा अप्रूवल भी जल्दी होता है। क्या अभी दोनों ऑफर साथ रखकर देखें?"},
+        push:{
+          q:{en:"OK. But is insurance compulsory with this loan? My friend was told he had to take it.",
+             hi:"ठीक है। लेकिन क्या इस लोन के साथ इंश्योरेंस लेना ज़रूरी है? मेरे दोस्त को कहा गया था कि लेना पड़ेगा।"},
+          who:"Customer pushes back",
+          ideas:[
+            {en:"saying clearly that it's optional", hi:"साफ़ बताना कि यह ज़रूरी नहीं है",
+             kw:["optional","not compulsory","not mandatory","your choice","choice","doesn't depend","ज़रूरी नहीं","आपकी मर्ज़ी","वैकल्पिक"]},
+            {en:"explaining what it covers", hi:"यह बताना कि इसमें क्या कवर है",
+             kw:["cover","protect","family","loan amount","accident","सुरक्षा","परिवार","कवर"]},
+            {en:"being open about the cost", hi:"खर्च साफ़ बताना",
+             kw:["premium","cost","per year","a year","₹","rupees","प्रीमियम","खर्च","साल"]}],
+          red:[{kw:["compulsory","mandatory","must take","have to take","required","ज़रूरी है","लेना पड़ेगा","अनिवार्य"],
+                unless:["not compulsory","not mandatory","not required","don't have to","no need","optional","ज़रूरी नहीं","वैकल्पिक"],
+                en:"Telling a customer insurance is compulsory when it isn't is mis-selling. It must be the customer's choice.",
+                hi:"जब इंश्योरेंस ज़रूरी न हो तब उसे ज़रूरी बताना गलत बिक्री है। यह ग्राहक की मर्ज़ी होनी चाहिए।"}],
+          sample:{en:"No sir, insurance is optional. The loan doesn't depend on it. It covers the loan amount if something happens to you, so your family isn't burdened. It costs about ₹1,200 a year; it's your choice.",
+                  hi:"नहीं सर, इंश्योरेंस ज़रूरी नहीं है। लोन उस पर निर्भर नहीं है। अगर आपको कुछ हो जाए तो यह लोन की रकम कवर करता है, ताकि परिवार पर बोझ न पड़े। इसका खर्च साल में लगभग ₹1,200 है; यह आपकी मर्ज़ी है।"}}},
+
       { q:{en:"It's the 25th. Your monthly target is 20 files and you have 8. What will you do?",
            hi:"आज 25 तारीख है। महीने का टारगेट 20 फाइल है और अभी 8 हुई हैं। आप क्या करेंगे?"},
         who:"Interviewer",
@@ -275,23 +379,49 @@ const ROLES = {
            kw:["priorit","hot","ready","close first","pending","पहले","तैयार","पेंडिंग"]},
           {en:"asking for help early", hi:"जल्दी मदद माँगना",
            kw:["manager","team","help","support","tell my","मैनेजर","टीम","मदद"]}],
-        sample:{en:"I will call all my pending leads and visit the dealer daily. I will try to close the ready files first.",
-                hi:"मैं सारी पेंडिंग लीड को कॉल करूँगा और रोज़ डीलर के पास जाऊँगा। जो फाइल तैयार हैं उन्हें पहले पूरा करूँगा।"}}
+        sample:{en:"I need 12 files in about 5 days, so over 2 a day. I will close the ready files first, call all pending leads, and visit my two best dealers daily. I'll also tell my manager today so he can help with walk-ins.",
+                hi:"मुझे 5 दिन में 12 फाइल चाहिए, यानी रोज़ 2 से ज़्यादा। मैं पहले तैयार फाइलें पूरी करूँगा, सारी पेंडिंग लीड को कॉल करूँगा, और रोज़ अपने दो अच्छे डीलरों के पास जाऊँगा। मैं आज ही मैनेजर को भी बताऊँगा ताकि वो मदद कर सकें।"},
+        push:{
+          q:{en:"A DSA agent calls: 'I'll give you 10 files this week if you give me 1% of your incentive in cash.' What do you say?",
+             hi:"एक DSA एजेंट कहता है: 'इस हफ़्ते 10 फाइल दूँगा, अगर तुम अपने इंसेंटिव का 1% कैश में दो।' आप क्या कहेंगे?"},
+          who:"Interviewer",
+          ideas:[
+            {en:"refusing clearly", hi:"साफ़ मना करना",
+             kw:[" no ","refuse","decline","won't","can't","not do","मना","नहीं"]},
+            {en:"reporting it to your manager or compliance", hi:"मैनेजर या कंप्लायंस को बताना",
+             kw:["report","manager","compliance","inform","बताऊँगा","रिपोर्ट","मैनेजर"]},
+            {en:"why: it's a kickback and against policy", hi:"क्यों: यह रिश्वत है और नियम के खिलाफ",
+             kw:["kickback","wrong","illegal","rule","policy","integrity","ethic","रिश्वत","गलत","नियम","ईमानदार"]}],
+          red:[{kw:[" ok "," okay "," deal ","accept"," fine ","ठीक है","मंज़ूर"], unless:[" no ","not","won't","refuse","report","मना","नहीं"],
+                en:"Paying a DSA for files is a kickback. It breaks company policy and can end your career.",
+                hi:"फाइल के बदले DSA को पैसे देना रिश्वत है। यह कंपनी नियम के खिलाफ है और करियर खत्म कर सकता है।"}],
+          sample:{en:"No. Sharing my incentive for files is a kickback and it's against company policy. I'll inform my branch manager, and I'll get my files through dealers and referrals.",
+                  hi:"नहीं। फाइल के बदले इंसेंटिव देना रिश्वत है और कंपनी के नियम के खिलाफ है। मैं ब्रांच मैनेजर को बताऊँगा, और अपनी फाइलें डीलर और रेफरल से लाऊँगा।"}}}
     ]
   },
 
   credit: {
     name: "Credit Analyst", sub: "Assessing applicants, red flags", langs: ["en"],
     rounds: [
-      { q:{en:"Walk me through how you would assess a salaried applicant for a car loan."},
+      { q:{en:"A salaried applicant has a CIBIL score of 690 and one 30+ DPD on a credit card, eight months ago. Would you approve the loan?"},
         who:"Interviewer",
         ideas:[
-          {en:"income and how stable it is", kw:["income","salary","slip","stabil","employer","job"]},
-          {en:"the bureau check", kw:["cibil","bureau","credit score","dpd","history"]},
-          {en:"existing obligations and FOIR", kw:["foir","obligation","existing emi","debt","ratio"]},
-          {en:"the vehicle, LTV and down payment", kw:["ltv","loan to value","down payment","on-road","ex-showroom","vehicle"]},
-          {en:"verifying documents and the bank statement", kw:["bank statement","verify","document","kyc","bounce"]}],
-        sample:{en:"I would check his salary slips and bank statement, then his CIBIL score, and see if the EMI is affordable."}},
+          {en:"not deciding on the score alone", kw:["not only","alone","just the score","investigate","depends","more information","not just","first check"]},
+          {en:"the reason and recency of the DPD", kw:["reason","why","recent","eight months","8 months","one-off","one time","dispute","statement"]},
+          {en:"repayment capacity: income and FOIR", kw:["income","salary","foir","obligation","repay","capacity"]},
+          {en:"a clear next step", kw:["approve","decline","reject","condition","deviation","refer","ask for"]}],
+        sample:{en:"I wouldn't decide on the score alone. One 30+ DPD eight months ago could be a dispute or a real cash problem, so I'd ask for that card statement. Then I'd check income and FOIR. If it was a one-off and FOIR is fine, I'd approve with a deviation note."},
+        push:{
+          q:{en:"Now you see his salary slip says ₹60,000, but his bank statement shows a salary credit of ₹42,000. What now?"},
+          ideas:[
+            {en:"not ignoring the mismatch", kw:["mismatch","difference","doesn't match","gap","inconsisten","18,000","18000"]},
+            {en:"possible reasons: deductions, or an edited slip", kw:["deduction","pf","tax","reimburse","edited","fake","tamper","allowance"]},
+            {en:"how you'd verify it", kw:["verify","employer","hr","form 16","itr","previous months","call the"]},
+            {en:"which income you'd use", kw:["lower","42","bank credit","conservative","net"]}],
+          red:[{kw:["accept 60","use 60","slip is official","take 60","go with the slip","use the slip"], unless:[" not ","won't"],
+                en:"Using the higher, unverified income inflates eligibility. Credit policy uses verified income."}],
+          sample:{en:"That's an ₹18,000 gap, so I can't ignore it. It could be PF and tax deductions, or an edited slip. I'd check three months of statements and Form 16, and verify with the employer. Until then I'd use the lower ₹42,000 bank credit for FOIR."}}},
+
       { q:{en:"Case: the applicant earns ₹45,000 a month, already pays a ₹12,000 EMI, and the new car loan EMI would be ₹14,000. Would you approve it?"},
         who:"Interviewer",
         ideas:[
@@ -299,53 +429,97 @@ const ROLES = {
           {en:"comparing it with the policy limit", kw:["policy","limit","norm","50","55","60","threshold"]},
           {en:"a fix: longer tenure, bigger down payment or a co-applicant", kw:["tenure","down payment","co-applicant","coapplicant","reduce","lower emi","smaller loan"]},
           {en:"a clear decision", kw:["approve","reject","decline","conditional","refer"]}],
-        sample:{en:"His total EMI would be 26,000 which is high compared to his salary. I would ask for a higher down payment."}},
-      { q:{en:"The bureau score is 780, but the bank statement shows three cheque bounces last quarter. What do you do?"},
+        sample:{en:"Total EMIs would be ₹26,000, so FOIR is about 58%, above a typical 50% limit. I wouldn't approve as it is. I'd ask for a bigger down payment or a co-applicant to bring the EMI down, then approve."},
+        push:{
+          q:{en:"The sales head calls you: 'This is our top dealer's reference. Just approve it.' What do you say?"},
+          ideas:[
+            {en:"policy comes first", kw:["policy","norm","rule","risk"]},
+            {en:"staying respectful and helpful", kw:["understand","respect","sir","help","want to approve"]},
+            {en:"offering a route to yes", kw:["co-applicant","down payment","tenure","documents","exception","deviation"]},
+            {en:"keeping it documented", kw:["document","record","email","in writing","note"]}],
+          red:[{kw:["i will approve","approve it","i'll approve","ok approve","fine, approve"], unless:["if ","policy"," not ","won't","co-applicant","down payment","once","after"],
+                en:"Approving outside policy because of pressure is what credit exists to prevent. Any exception needs a documented approval."}],
+          sample:{en:"I understand the dealer matters, sir, and I want to approve it. But at 58% FOIR it's outside policy. If we get a co-applicant or a bigger down payment, I'll pass it the same day. Any exception has to be approved in writing."}}},
+
+      { q:{en:"A grocery shop owner wants a ₹3 lakh business loan. No GST registration, and about 80% of sales are in cash. How would you assess him?"},
         who:"Interviewer",
         ideas:[
-          {en:"not relying on the score alone", kw:["score alone","despite","even though","but ","not enough","recent"]},
-          {en:"finding out why the cheques bounced", kw:["reason","why","clarif","explanation","ask","investigat","technical"]},
-          {en:"checking the pattern in the statement", kw:["balance","pattern","statement","months","salary credit","average"]},
-          {en:"a decision with conditions, or a referral", kw:["refer","deviation","condition","nach","approve with","decline","flag","senior"]}],
-        sample:{en:"The score is good but bounces are a risk. I would ask the customer why the cheques bounced before deciding."}}
+          {en:"a shop visit or personal discussion", kw:["visit","personal discussion","pd","shop","inventory","stock","field"]},
+          {en:"other proof of income", kw:["bank statement","upi","qr","supplier","bills","diary","electricity","rent"]},
+          {en:"a conservative income estimate", kw:["conservative","margin","estimate","average","lower"]},
+          {en:"a decision with conditions", kw:["approve","decline","smaller","limit","condition","co-applicant","collateral"]}],
+        sample:{en:"No GST isn't a reason to reject. I'd visit the shop to check stock and footfall, look at UPI credits and supplier bills, and estimate income conservatively from margins. Then I'd approve a smaller amount if the numbers hold."},
+        push:{
+          q:{en:"Give me your recommendation in one line: approve, decline or investigate further, and why."},
+          ideas:[
+            {en:"a clear call", kw:["approve","decline","reject","investigate"]},
+            {en:"the main risk", kw:["risk","cash","irregular","unverified","income"]},
+            {en:"the condition", kw:["if ","condition","after","once","verify","limit","smaller"]}],
+          sample:{en:"Investigate further: income is mostly unverified cash, so I'd approve a smaller amount only after a shop visit and six months of UPI and bank credits."}}}
     ]
   },
 
   data: {
-    name: "Data Analyst", sub: "Projects, metrics, SQL logic", langs: ["en"],
+    name: "Data Analyst", sub: "Business problems, SQL, explaining data", langs: ["en"],
     rounds: [
-      { q:{en:"Tell me about a project where your analysis changed a decision."},
+      { q:{en:"Two-wheeler loan disbursements fell 20% month-on-month. How would you investigate?"},
         who:"Interviewer",
         ideas:[
-          {en:"the problem you were solving", kw:["problem","question","issue","goal","wanted to"]},
-          {en:"the data and tools you used", kw:["sql","excel","python","power bi","tableau","data","dashboard"]},
-          {en:"what you found", kw:["found","insight","showed","noticed","discover"]},
-          {en:"the result, with a number", kw:["%","percent","increas","reduc","saved","₹","lakh","hours","result"]}],
-        sample:{en:"I made a sales dashboard in Excel and Power BI. It showed which region was falling behind and the manager used it in reviews."}},
-      { q:{en:"Loan disbursals dropped 15% last month. How would you find out why?"},
+          {en:"checking the data is right first", kw:["data issue","correct","validat","check the data","missing","pipeline","complete","confirm"]},
+          {en:"breaking it down by branch, dealer, product or channel", kw:["region","branch","product","channel","segment","dealer","break"]},
+          {en:"looking at the funnel: leads, approvals, rejections", kw:["funnel","lead","application","approval","rejection","conversion","stage","tat"]},
+          {en:"outside factors like season or festivals", kw:["season","last year","festival","trend","competitor","policy change","rate"]}],
+        sample:{en:"First I'd confirm the data is complete. Then I'd split the drop by branch, dealer and product, and check the funnel: were leads down, or approvals? I'd also compare with last year, because a festive month is often followed by a dip."},
+        push:{
+          q:{en:"Stop. Forget the dashboard. Name the first two cuts you'd look at, and why."},
+          ideas:[
+            {en:"two specific cuts", kw:["branch","dealer","product","channel","region","state","dsa"]},
+            {en:"a funnel stage", kw:["lead","application","approval","rejection","tat","conversion","sanction"]},
+            {en:"a reason for each", kw:["because","since","so that","to see","tells"]}],
+          sample:{en:"Dealer first, because two-wheeler volume is concentrated in a few dealers, so one big dealer dropping would show up at once. Then approval rate, to see whether leads fell or credit rejected more."}}},
+
+      { q:{en:"In words or SQL: how would you calculate collection efficiency by DPD bucket for last month?"},
         who:"Interviewer",
         ideas:[
-          {en:"checking the data is right first", kw:["data issue","correct","validat","check the data","missing","pipeline"]},
-          {en:"breaking it down by region, product or channel", kw:["region","branch","product","channel","segment","dealer","break"]},
-          {en:"looking at the funnel: applications, approvals, rejections", kw:["funnel","application","approval","rejection","conversion","stage"]},
-          {en:"comparing with seasonality or outside events", kw:["season","last year","festival","trend","competitor","policy change","rate"]}],
-        sample:{en:"I would compare this month with last month by region and product to see where the drop came from."}},
-      { q:{en:"Explain the logic of a SQL query that finds the top 5 branches by disbursal amount this month."},
+          {en:"collected divided by due", kw:["sum","collected","due","/","divide","ratio"]},
+          {en:"grouped by bucket", kw:["group by","bucket","dpd"]},
+          {en:"filtered to last month", kw:["where","last month","month","date"]}],
+        sample:{en:"SELECT dpd_bucket, SUM(amount_collected) / SUM(amount_due) AS efficiency FROM collections WHERE month = last month GROUP BY dpd_bucket."},
+        push:{
+          q:{en:"Some rows have amount_due = 0. What happens, and how do you handle it?"},
+          ideas:[
+            {en:"spotting the divide-by-zero", kw:["divide by zero","division by zero","error","null","infinite"]},
+            {en:"handling it in the query", kw:["nullif","case when","exclude","filter","where amount_due","coalesce"]},
+            {en:"asking why the rows exist", kw:["why","check","data issue","closed","prepaid","investigate"]}],
+          sample:{en:"Dividing by zero would error or return null. I'd use NULLIF(SUM(amount_due), 0) or exclude those rows, and then check why they exist, maybe closed or prepaid accounts."}}},
+
+      { q:{en:"Your dashboard shows First Payment Default rising. Explain it to a branch head who doesn't like data."},
         who:"Interviewer",
         ideas:[
-          {en:"filtering to this month", kw:["where","this month","date","month"]},
-          {en:"summing the amount per branch", kw:["sum","group by","total"]},
-          {en:"sorting from highest to lowest", kw:["order by","desc","highest","sort"]},
-          {en:"keeping only the top 5", kw:["limit","top 5","top five"]}],
-        sample:{en:"I will take the disbursal table, sum the amount for each branch, sort it from highest to lowest and take the top 5."}}
+          {en:"a plain definition", kw:["first emi","very first","first instalment","didn't pay","did not pay"]},
+          {en:"one simple number", kw:["out of","100","in every","per 100"]},
+          {en:"what it means for his branch", kw:["sourcing","new customers","files","branch","risk","dealer"]},
+          {en:"a next step", kw:["check","review","verify","action","next step","suggest","let's"]}],
+        sample:{en:"Sir, out of every 100 loans we gave last month, about 6 people didn't pay even their first EMI. That usually points to sourcing, so let's review which dealers those files came from."},
+        push:{
+          q:{en:"Branch head: 'Your numbers are wrong. My branch is fine.'"},
+          who:"Branch head pushes back",
+          ideas:[
+            {en:"not getting defensive", kw:["understand","fair","let's check","together","possible","could be"]},
+            {en:"checking definitions and source", kw:["definition","source","reconcile","check the data","verify","compare"]},
+            {en:"showing the actual accounts", kw:["list","accounts","show","names","files","evidence"]}],
+          red:[{kw:["you are wrong","numbers don't lie","data is always right","sql is correct","data can't be wrong"], unless:[],
+                en:"Insisting the data can't be wrong loses the room. Check definitions together and show the actual accounts."}],
+          sample:{en:"That's possible, sir, let's check it together. I'll confirm we're using the same definition and source, and show you the list of accounts behind the number so you can verify them."}}}
     ]
   }
 };
 
 /* ---------- state ---------- */
-let role = null, lang = null, round = 0, results = [];
+let role = null, lang = null, round = 0, stage = 0, first = null, results = [];
 const $ = s => document.querySelector(s);
 const show = id => ["setup","interview","results"].forEach(s => $("#"+s).classList.toggle("hidden", s!==id));
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 /* ---------- setup screen ---------- */
 const roleBox = $("#roleChoices");
@@ -374,13 +548,17 @@ function updateStart(){ $("#startBtn").disabled = !(role && lang); }
 $("#startBtn").addEventListener("click", () => { round = 0; results = []; loadRound(); show("interview"); });
 
 /* ---------- interview screen ---------- */
+const current = () => { const q = ROLES[role].rounds[round]; return stage===1 ? q.push : q; };
+
 function loadRound(){
   const r = ROLES[role], q = r.rounds[round];
+  stage = 0; first = null;
   $("#roleTag").textContent = `${r.name} · ${lang==="hi"?"हिंदी":"English"}`;
   $("#roundTag").textContent = `Round ${round+1} of ${r.rounds.length}`;
   $("#roundBar").style.width = `${(round/r.rounds.length)*100}%`;
   $("#whoLabel").textContent = q.who;
   $("#question").textContent = q.q[lang];
+  $("#thread").innerHTML = "";
   $("#answer").value = ""; $("#answer").disabled = false;
   $("#roundFeedback").innerHTML = "";
   $("#submitBtn").classList.remove("hidden"); $("#nextBtn").classList.add("hidden");
@@ -390,32 +568,68 @@ function loadRound(){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
+function norm(text){ return " " + text.toLowerCase().replace(/[.,!?;:"'()]/g," ").replace(/\s+/g," ") + " "; }
 function scoreAnswer(text, q){
-  const t = " " + text.toLowerCase() + " ";
+  const t = norm(text);
+  const has = k => t.includes(k.toLowerCase().replace(/[.,!?;:"'()]/g," "));
   const words = text.trim().split(/\s+/).filter(Boolean).length;
   const covered = [], missed = [];
-  q.ideas.forEach(idea => (idea.kw.some(k => t.includes(k.toLowerCase())) ? covered : missed).push(idea));
+  q.ideas.forEach(idea => (idea.kw.some(has) ? covered : missed).push(idea));
+  const flags = (q.red||[]).filter(f => f.kw.some(has) && !f.unless.some(has));
   let score = words < 8 ? 25 : Math.round(38 + (covered.length/q.ideas.length)*50 + (words >= 25 ? 8 : 0));
   score = Math.max(20, Math.min(96, score));
-  return { score, covered, missed, words };
+  if(flags.length) score = Math.min(score, 30);
+  return { score, covered, missed, words, flags };
 }
-const label = idea => (lang==="hi" && idea.hi) ? idea.hi : idea.en;
+const label = idea => ((lang==="hi" && idea.hi) ? idea.hi : idea.en).replace(/\.$/,"");
+const flagText = f => (lang==="hi" && f.hi) ? f.hi : f.en;
+
+function feedbackHTML(res, title){
+  const good = res.score >= 65 && !res.flags.length;
+  return `<div class="round-fb ${good?"good":"mid"}">
+      <span class="chip">${res.score}</span><b>${title ? title+" " : ""}${res.flags.length ? "Red line crossed." : good ? "Good answer." : "Getting there."}</b>
+      ${res.flags.map(f=>`<div class="flag">⚠ ${flagText(f)}</div>`).join("")}
+      ${res.covered.length ? `<div style="margin-top:6px">You covered: ${res.covered.map(label).join("; ")}.</div>` : ""}
+      ${res.missed.length ? `<div style="margin-top:6px">Also cover: ${res.missed.map(label).join("; ")}.</div>` : ""}
+      ${res.words < 8 ? `<div style="margin-top:6px">Your answer was very short. Interviewers expect 3–5 sentences.</div>` : ""}
+    </div>`;
+}
 
 $("#submitBtn").addEventListener("click", () => {
   const text = $("#answer").value.trim();
   if(text.split(/\s+/).filter(Boolean).length < 3){ toast("Say or type a little more first."); return; }
   stopMic();
   const q = ROLES[role].rounds[round];
-  const res = scoreAnswer(text, q);
-  results.push(res);
-  const good = res.score >= 65;
-  $("#roundFeedback").innerHTML = `
-    <div class="round-fb ${good?"good":"mid"}">
-      <span class="chip">${res.score}</span><b>${good ? "Good answer." : "Getting there."}</b>
-      ${res.covered.length ? `<div style="margin-top:6px">You covered: ${res.covered.map(label).join("; ")}.</div>` : ""}
-      ${res.missed.length ? `<div style="margin-top:6px">Also cover: ${res.missed.map(label).join("; ")}.</div>` : ""}
-      ${res.words < 8 ? `<div style="margin-top:6px">Your answer was very short. Interviewers expect 3–5 sentences.</div>` : ""}
-    </div>`;
+  const res = scoreAnswer(text, current());
+
+  if(stage === 0 && q.push){
+    // show the answer, a short verdict, then the interviewer pushes back
+    first = res;
+    const pushWho = q.push.who || "Interviewer pushes back";
+    $("#thread").innerHTML = `
+      <div class="mine">${esc(text)}</div>
+      ${feedbackHTML(res, "First answer:")}
+      <div class="bubble push">
+        <div class="who"><span>${pushWho}</span><button class="listen" id="listenPush">🔊 Listen</button></div>
+        <div id="pushQ">${esc(q.push.q[lang])}</div>
+      </div>`;
+    $("#listenPush").addEventListener("click", () => speak(q.push.q[lang]));
+    stage = 1;
+    $("#answer").value = "";
+    $("#answer").focus({preventScroll:true});
+    $("#pushQ").scrollIntoView({behavior:"smooth", block:"center"});
+    return;
+  }
+
+  // final answer for this round: combine with the first answer
+  const all = first ? {
+      score: Math.round((first.score + res.score)/2),
+      covered: first.covered.concat(res.covered), missed: first.missed.concat(res.missed),
+      words: Math.min(first.words, res.words), flags: first.flags.concat(res.flags) } : res;
+  results.push(all);
+  $("#thread").insertAdjacentHTML("beforeend", `<div class="mine">${esc(text)}</div>`);
+  $("#roundFeedback").innerHTML = feedbackHTML(res, first ? "Push-back answer:" : "") +
+    (first ? `<p class="small" style="margin-top:8px">Round score: <b>${all.score}</b> (average of both answers)</p>` : "");
   $("#answer").disabled = true;
   $("#submitBtn").classList.add("hidden"); $("#sampleBtn").classList.add("hidden");
   $("#nextBtn").classList.remove("hidden");
@@ -427,7 +641,7 @@ $("#nextBtn").addEventListener("click", () => {
 });
 
 $("#sampleBtn").addEventListener("click", () => {
-  $("#answer").value = ROLES[role].rounds[round].sample[lang];
+  $("#answer").value = current().sample[lang];
   toast("Sample answer added. Submit it to see the feedback, or edit it first.");
 });
 
@@ -454,16 +668,17 @@ function pickVoice(l){
   };
   return pool.sort((a,b) => rank(b) - rank(a))[0] || null;
 }
-$("#listenBtn").addEventListener("click", () => {
+$("#listenBtn").addEventListener("click", () => speak($("#question").textContent));
+function speak(text){
   if(!("speechSynthesis" in window)){ toast("Your browser can't read aloud."); return; }
   speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance($("#question").textContent);
+  const u = new SpeechSynthesisUtterance(text);
   u.lang = lang==="hi" ? "hi-IN" : "en-IN";
   const v = pickVoice(lang);
   if(v){ u.voice = v; u.lang = v.lang; }
   u.rate = .9; u.pitch = 1.05; u.volume = .9;
   speechSynthesis.speak(u);
-});
+}
 
 /* ---------- voice: answer by speaking ---------- */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -499,7 +714,9 @@ $("#micBtn").addEventListener("click", () => listening ? stopMic() : startMic())
 /* ---------- results ---------- */
 function showResults(){
   const r = ROLES[role];
-  const total = Math.round(results.reduce((a,b)=>a+b.score,0)/results.length);
+  const crossed = results.some(res => res.flags.length);
+  let total = Math.round(results.reduce((a,b)=>a+b.score,0)/results.length);
+  if(crossed) total = Math.min(total, 45);   // a red line fails the interview
   $("#totalScore").textContent = total;
   $("#ring").style.background = `conic-gradient(var(--blue) 0 ${total}%, var(--line) ${total}% 100%)`;
   $("#resultTitle").textContent = `${r.name} · ${lang==="hi"?"हिंदी":"English"}`;
@@ -509,14 +726,19 @@ function showResults(){
   $("#roundScores").innerHTML = results.map((res,i)=>`
     <div class="rline"><span>Round ${i+1}</span><div class="bar"><i style="width:${res.score}%"></i></div><b>${res.score}</b></div>`).join("");
 
+  const flags = results.flatMap((res,i) => res.flags.map(f => `Round ${i+1}: ${flagText(f)}`));
+  $("#rulecheck").innerHTML = flags.length
+    ? flags.map(s=>`<li class="bad">${s}</li>`).join("")
+    : `<li class="ok">No red lines crossed in ${results.length*2} answers.</li>`;
+
   const strengths = [];
   results.forEach((res,i) => { if(res.covered.length) strengths.push(`Round ${i+1}: ${res.covered.map(label).join(", ")}.`); });
-  if(!strengths.length) strengths.push("You completed all three rounds. That already puts you ahead of most people, who never practise out loud.");
+  if(!strengths.length) strengths.push("You completed all three rounds and every push-back. That already puts you ahead of most people, who never practise out loud.");
   $("#strengths").innerHTML = strengths.map(s=>`<li>${s}</li>`).join("");
 
   // three fixes: missed ideas, taken from the weakest rounds first
   const order = results.map((res,i)=>({res,i})).sort((a,b)=>a.res.score-b.res.score);
-  const fixes = [];
+  const fixes = flags.length ? [`${flags[0].split(":")[0]}: never cross a red line. It fails the interview even if everything else is right.`] : [];
   order.forEach(({res,i}) => res.missed.forEach(m => { if(fixes.length<3) fixes.push(`Round ${i+1}: add ${label(m)}.`); }));
   order.forEach(({res,i}) => { if(fixes.length<3 && res.words<25) fixes.push(`Round ${i+1}: give a fuller answer, 3–5 sentences with one example.`); });
   if(!fixes.length) fixes.push("Strong all round. Next, practise the same answers out loud against a 60-second timer.");

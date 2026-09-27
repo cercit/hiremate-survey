@@ -210,7 +210,7 @@
       <tr><td>InterviewBuddy</td><td>English</td><td>General</td><td>Human experts</td><td>~₹1,000–2,500/session</td></tr>
       <tr class="us"><td><b>HireMate</b></td><td>English + Hindi</td><td><b>BFSI + analyst</b></td><td><b>Role-play + benchmark score</b></td><td><b>Free first, ₹99/mock</b></td></tr>
     </table></div>
-    <div class="callout">Our survey says the real competitor is ChatGPT, not Apna. That's what respondents already use to prepare. So the pitch isn't "AI mock interviews". It's the things ChatGPT doesn't do: <b>a voice role-play that pushes back, a score against other candidates, and questions taken from how NBFCs actually interview.</b></div>
+    <div class="callout">Our survey says the real competitor is ChatGPT, not Apna. That's what respondents already use to prepare. So the pitch isn't "AI mock interviews". It's the things ChatGPT doesn't do: <b>a voice role-play that pushes back, a score against other candidates, and questions taken from how NBFCs actually interview.</b><br><b>ChatGPT tells you answers. HireMate argues back.</b></div>
   </section>
 
   <!-- 3 -->
@@ -293,6 +293,17 @@
     </div>
     <div class="callout amber">Survey data is <b>directional, not proof</b>. n = 14, and more than half came from my own network (PMs and engineers), which I report separately. The interviews carry the real weight.</div>
 
+    <h3>Grounded in how banks and NBFCs actually hire</h3>
+    <p>The question bank (48 scenarios, 12 per role) was built from ChatGPT and Gemini research, then checked at the primary source. These facts shape the MVP:</p>
+    <div class="tbl"><table>
+      <tr><th>Fact</th><th>What it means for HireMate</th><th>Source</th></tr>
+      <tr><td>Recovery calls only 8 a.m.–7 p.m.; no intimidation; no telling family or friends about the debt</td><td>Collections mocks test these rules and flag a breach as a red line</td><td>RBI circular, 11 Oct 2022 <span class="tag v">Verified</span></td></tr>
+      <tr><td>Recovery agents must hold the IIBF Debt Recovery Agent certificate (50 h training for graduates)</td><td>A future add-on: DRA exam practice</td><td>IIBF <span class="tag v">Verified</span></td></tr>
+      <tr><td>ICICI's Sales &amp; Relationship Manager programme hires freshers through an aptitude test and 2 interviews, at ₹3.14–3.85 L. Engineers and MBAs aren't eligible.</td><td>Sales mocks target graduates, which is our beachhead</td><td>ICICI Careers <span class="tag v">Verified</span></td></tr>
+      <tr><td>Mahindra Finance's Prarambh programme trains freshers for 1 month, then hires Business and Collection Executives at ₹3.5 LPA</td><td>Skilling programmes are a partner channel (Phase 2)</td><td>Mahindra Finance <span class="tag v">Verified</span></td></tr>
+    </table></div>
+    <div class="callout ok"><b>7 AI errors caught and fixed</b> in this round, on top of the 6 in the market research. Examples: Gemini called a weekend RTGS credit a sign of forgery (RTGS has run 24×7 since Dec 2020), and 4 of its "model answers" would break fair-practice rules (fake urgency, compulsory insurance, threat-like escalation, social-media tracing). An interview coach that teaches rule-breaking answers is a liability, so every scenario is checked before it ships.</div>
+
     <h3>How they'd prefer to pay (survey)</h3>
     <div class="bar"><span class="l">Monthly unlimited</span><span class="t"><i style="width:57%"></i></span><span class="n">8</span></div>
     <div class="bar"><span class="l">Free only</span><span class="t"><i style="width:29%"></i></span><span class="n">4</span></div>
@@ -317,6 +328,8 @@
       <tr><th>Feature</th><th>In MVP</th><th>Why it's needed to test product-market fit</th></tr>
       <tr><td><b>Voice mock interview, 4 roles</b></td><td>Yes</td><td>The core value. Real interviews are spoken, and field roles are judged on how you talk.</td></tr>
       <tr><td><b>Role-play scenarios</b> (collections call, sales objection, credit case)</td><td>Yes</td><td>The difference from ChatGPT and Apna. If users don't value these, the positioning is wrong.</td></tr>
+      <tr><td><b>Push-back follow-ups</b> (e.g. job-loss customer → "I'll complain to RBI")</td><td>Yes</td><td>Being challenged is what ChatGPT and YouTube don't give. It's also what candidates freeze on in real interviews.</td></tr>
+      <tr><td><b>Red-line check</b> (RBI recovery rules, mis-selling, kickbacks)</td><td>Yes</td><td>A rule-breaking answer fails a real BFSI interview. Employers care about this more than polish.</td></tr>
       <tr><td><b>Feedback: 3 strengths, 3 fixes, 3-step plan</b></td><td>Yes</td><td>Tests H2: whether knowing what to fix is worth paying for.</td></tr>
       <tr><td><b>Benchmark score + share card</b></td><td>Yes</td><td>The reason to come back, and the main growth loop.</td></tr>
       <tr><td>English + Hindi</td><td>Yes</td><td>Tests H4 properly with field-role users.</td></tr>
@@ -347,7 +360,7 @@
   <section id="bonus">
     <h2><span class="num">7</span>Landing page, prototype and promo posts</h2>
     <h3>Clickable prototype</h3>
-    <p>Pick a role and a language, answer out loud (speech-to-text) or use a sample answer, and get a score, a ranking band, strengths, fixes and a 3-step plan. Collections and Sales work in Hindi too. The scoring is keyword-based, as a stand-in for the LLM.</p>
+    <p>Pick a role and a language, then answer out loud (speech-to-text) or type. <b>After every answer the interviewer pushes back</b>, e.g. a job-loss customer who then threatens to complain to RBI, or a DSA offering files for a cash cut. You get a score, a <b>red-line check</b> against RBI recovery rules and fair selling, a ranking band, strengths, fixes and a 3-step plan. Collections and Sales work in Hindi too. Scoring is keyword-based, as a stand-in for the LLM. Try a wrong answer on purpose, like "OK sir, I'll call at 7:30".</p>
     <div class="frame">
       <div class="bar2"><span>Prototype · mock interview</span><a href="../demo/" target="_blank" rel="noopener">Open full screen ↗</a></div>
       <iframe src="../demo/" title="HireMate prototype" loading="lazy" allow="microphone"></iframe>
