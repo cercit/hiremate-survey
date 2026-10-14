@@ -70,6 +70,7 @@
   .tag.w{background:var(--warn-soft);color:var(--warn)}
 
   .tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+  .tiers.tiers3{grid-template-columns:repeat(3,1fr)}
   .tier{border:1px solid var(--line);border-radius:14px;padding:16px}
   .tier.best{border:2px solid var(--blue)}
   .tier .p{font-size:26px;font-weight:800;color:var(--navy);letter-spacing:-.5px}
@@ -117,6 +118,7 @@
     .layout{padding:0 16px}
     .brand b{display:none}
     .tiers{grid-template-columns:1fr}
+    .tiers.tiers3{grid-template-columns:1fr}
     .bar .l{width:110px}
   }
   :root[data-theme="dark"]{--navy:#DCE7F7; --navy-2:#1A2A40; --blue:#3478F6; --blue-soft:#15294A; --ink:#E4EAF2; --muted:#9AA8BA; --line:#26344A; --card:#142034; --bg:#0D1624; --bg-2:#121E30; --ok:#3CCB7F; --ok-soft:#10301F; --warn:#FF8A5B; --warn-soft:#3A1E12; --deep:#0A1320; --deep-2:#15233A; --nav-bg:rgba(13,22,36,.92); --hero-top:#101D31; --hover:#1A2940; --trust-bg:#2A1A10; --trust-line:#5A3420; --trust-h:#FFB48A; --trust-p:#E3C3AE; --shield:#3E2415; --proto-bg:#33290F; --proto-line:#5C4A1A; --proto-ink:#F2C14E; --rec-bg:#3A1515; --rec-line:#7A2E2E; --rec-ink:#FF9C9C; --amber:#F2C14E; --amber-soft:#33290F; color-scheme:dark}
@@ -169,7 +171,7 @@
   <section id="exec">
     <h2><span class="num">1</span>Executive summary</h2>
     <p>Entry-level hiring in India is growing, but most candidates walk in unprepared and nobody tells them why they were rejected. HireMate runs the real interview for four high-volume roles: <b>Data Analyst, Credit Analyst, Field Sales / Relationship Executive and Collections Officer</b>. It does this in English or Hindi, then scores the answer against others going for the same role and lists what to fix.</p>
-    <p>Candidates pay small amounts, starting with a free first mock and ₹99 per mock after that. Once the candidate pool is big enough, the larger revenue comes from <b>employers, who pay a success fee only when they hire</b> a pre-screened candidate. The plan reaches <b>10,000 users in 6 months</b> through colleges, WhatsApp job groups and a shareable score card.</p>
+    <p>Candidates pay small amounts, starting with a free first mock and ₹99 per mock after that. <b>Colleges and training institutes</b> buy seats for their students. Once the pool is big enough, NBFCs pay a <b>success fee, but only after a hire has stayed 30 days</b>. The plan reaches <b>10,000 users in 6 months</b> through colleges, WhatsApp job groups and a shareable score card.</p>
     <div class="kpis">
       <div class="kpi"><b>10,000</b><span>users by month 6</span></div>
       <div class="kpi"><b>5,000/wk</b><span>mocks completed (North Star)</span></div>
@@ -198,7 +200,8 @@
       <tr><td><b>A.</b> Fresher, analyst track</td><td>₹25–45k</td><td>SQL/Excel, case rounds, explaining projects</td><td>Packs before placements</td></tr>
       <tr class="us"><td><b>B.</b> Fresher, field track (beachhead)</td><td>₹15–22k</td><td>Confidence, sales role-play, interview language</td><td>Single mocks</td></tr>
       <tr class="us"><td><b>C.</b> Switcher, 1–3 yrs (beachhead)</td><td>₹18–70k</td><td>Explaining experience, no time to prepare</td><td>Job-Ready Pass</td></tr>
-      <tr><td><b>D.</b> Employer (NBFCs, banks)</td><td>—</td><td>Early exits; each frontline hire costs ₹50k–1.5 lakh</td><td>Success fee per hire</td></tr>
+      <tr><td><b>D.</b> Colleges &amp; training institutes</td><td>—</td><td>Placement promises they can't back with interview prep</td><td>Seats for their students</td></tr>
+      <tr><td><b>E.</b> Employer (NBFCs first, banks later)</td><td>—</td><td>Early exits; each frontline hire costs ₹50k–1.5 lakh</td><td>Success fee after 30 days (NBFC); assessment pilot (bank)</td></tr>
     </table></div>
 
     <h3>Competitors</h3>
@@ -216,17 +219,17 @@
   <!-- 3 -->
   <section id="pricing">
     <h2><span class="num">3</span>Pricing strategy</h2>
-    <p><b>Model:</b> freemium plus small one-time payments, with a time-boxed pass instead of a monthly subscription. Job searching happens in bursts: people prepare hard for a few weeks and then stop. A pass that ends after 90 days fits that pattern, and it never auto-renews on someone who has already got a job.</p>
-    <div class="tiers">
+    <p><b>Model:</b> freemium plus small one-time payments, a time-boxed pass instead of a monthly subscription, and seats sold to colleges and institutes. Job searching happens in bursts: people prepare hard for a few weeks and then stop. A pass that ends after 90 days fits that pattern, and it never auto-renews on someone who has already got a job.</p>
+    <div class="tiers tiers3">
       <div class="tier"><h4>Free</h4><div class="p">₹0</div><ul><li>Profile</li><li>1 full mock interview</li><li>Basic feedback</li></ul></div>
       <div class="tier"><h4>Single mock</h4><div class="p">₹99</div><ul><li>1 role-specific mock</li><li>Detailed feedback</li><li>Benchmark score</li></ul></div>
-      <div class="tier"><h4>Interview Pack</h4><div class="p">₹499</div><ul><li>10 mocks (₹50 each)</li><li>Valid 60 days</li></ul></div>
       <div class="tier best"><h4>Job-Ready Pass ★</h4><div class="p">₹599</div><ul><li>Unlimited mocks for 90 days (fair use: 30)</li><li>Resume review + growth plan</li><li>Shareable score card</li></ul></div>
     </div>
-    <p class="sub">Add-on: ₹10 AI resume review. It's a deliberately tiny first UPI payment, to build the habit of paying.</p>
+    <p class="sub">Add-on: ₹10 AI resume review, a deliberately tiny first UPI payment to build the habit. <b>Institutions:</b> colleges and training institutes buy Job-Ready Passes in bulk for their students (price per seat negotiated, target ₹300–400).</p>
 
     <div class="callout amber"><b>Changed after the survey</b> <span class="tag a">Assumed</span><br>
-      When asked how they'd prefer to pay, 8 of 14 respondents chose "monthly unlimited" and none chose the 10-mock pack. So the ₹599 tier is now framed as <b>unlimited for 90 days</b> instead of "30 mocks". It's the same cost ceiling for us, but it answers what people actually asked for. The ₹499 pack stays for now as a price anchor. If it still sells under 5% of paid orders by month 2, it goes.</div>
+      When asked how they'd prefer to pay, 8 of 14 survey respondents chose "monthly unlimited" and none chose the 10-mock pack. So the ₹599 tier became <b>unlimited for 90 days</b>, and <b>the ₹499 pack was dropped</b>: no survey respondent and no persona chose it.<br>
+      <b>Open conflict:</b> all 5 synthetic candidate personas rejected monthly plans and preferred ₹99–₹200 once, before a specific interview. The real survey was small and mostly my own network. Launch with both the ₹99 single and the ₹599 pass, and let real purchases decide.</div>
 
     <h3>Justification</h3>
     <div class="tbl"><table>
@@ -241,8 +244,9 @@
     <h3>Employer side (from month 6)</h3>
     <div class="tbl"><table>
       <tr><th>Model</th><th>Price</th><th>Why</th></tr>
-      <tr><td><b>Success fee per hire</b>, paid by the employer</td><td>20% of the hire's first-month salary (≈ ₹3,600 on ₹18k)</td><td>Agencies charge ~8.33% of annual CTC, roughly a full month's salary. HireMate costs about a fifth of that, and only on a joining.</td></tr>
-      <tr><td>Verified candidate pool (later)</td><td>Monthly subscription</td><td>Benchmark scores plus KYC-verified identity and certificates (Aadhaar e-KYC / DigiLocker)</td></tr>
+      <tr><td><b>NBFCs: success fee per hire</b>, paid by the employer</td><td>20% of the hire's first-month salary (≈ ₹3,600 on ₹18k), <b>due after the hire has stayed 30 days</b></td><td>Agencies charge ~8.33% of annual CTC, roughly a full month's salary. HireMate costs about a fifth of that, and only for people who stay. Sold to regional HR, since branch managers can't approve spend.</td></tr>
+      <tr><td><b>Banks: assessment tool</b> (later)</td><td>Pilot, then per assessment</td><td>Banks won't pay for "screened candidates", but may pilot role-specific assessments through procurement, after an information-security review and with candidate consent.</td></tr>
+      <tr><td>Employer view of a candidate</td><td>—</td><td>A <b>30-second audio clip</b> of the role-play, the red-line result and the reasoning, never just a score. Shared only with the candidate's consent.</td></tr>
     </table></div>
     <div class="callout">Candidates never pay a share of their salary. In our survey, 6 of 14 had been asked to pay money to get a job, and one had actually paid. The draft Private Placement Agency Bill 2025 <span class="tag v">Verified</span> targets exactly these fees. <b>No job guarantees, and no placement fees charged to candidates, ever.</b></div>
   </section>
@@ -255,10 +259,10 @@
         <ul><li>Survey waitlist gets 2 free mocks</li><li>5 Tier-2 college "mock interview days" (north Karnataka first)</li><li>WhatsApp / Telegram job groups: a Hindi collections role-play clip</li><li>Referral: both people get 1 free mock</li><li>Founder LinkedIn: one real interview mistake a week</li></ul>
         <p class="sub" style="margin-top:8px">Budget ₹0–20k · CAC &lt; ₹20</p></div>
       <div class="phase"><div class="sub">Months 3–4 · social proof</div><div class="r">1k → 5,000</div>
-        <ul><li>Shareable score card ("Top 20% for Collections, Hindi")</li><li>"Got the job" stories in the user's own words</li><li>Hindi Shorts / Reels: "what the manager wants to hear"</li><li>Skilling institutes and bank-exam coaching centres</li></ul>
+        <ul><li>Shareable score card ("Top 20% for Collections, Hindi")</li><li>"Got the job" stories in the user's own words</li><li>Hindi Shorts / Reels: "what the manager wants to hear"</li><li><b>College placement cells and training institutes buy seats</b> (every persona named one as the payer)</li></ul>
         <p class="sub" style="margin-top:8px">Budget ~₹50k · CAC &lt; ₹30</p></div>
       <div class="phase"><div class="sub">Months 5–6 · paid + employers</div><div class="r">5k → 10,000</div>
-        <ul><li>5–10 Hindi career YouTubers, paid per sign-up</li><li>Meta / Google ads aimed at Tier-2/3 cities and "bank jobs" searches</li><li>WhatsApp nudges: day 1, day 3, and the night before an interview</li><li>2–3 NBFC employer pilots</li></ul>
+        <ul><li>5–10 Hindi career YouTubers, paid per sign-up</li><li>Meta / Google ads aimed at Tier-2/3 cities and "bank jobs" searches</li><li>WhatsApp nudges: day 1, day 3, and the night before an interview</li><li>2–3 NBFC pilots: pay only after a hire stays 30 days</li></ul>
         <p class="sub" style="margin-top:8px">Budget ₹2–3 lakh · CAC &lt; ₹40</p></div>
     </div>
     <h3>Growth levers</h3>
@@ -284,7 +288,7 @@
   <section id="mvp">
     <h2><span class="num">5</span>MVP strategy and problem validation</h2>
     <h3>What we did</h3>
-    <p>Market research from four AI tools, cross-checked, with every number used here verified at the original source (6 errors caught and removed). This was followed by a self-hosted survey with a screener, launched 19 Sep, and 7 recorded interviews (5 candidates, 2 HR people) scheduled for 26–28 Sep.</p>
+    <p>Market research from four AI tools, cross-checked, with every number used here verified at the original source (6 errors caught and removed). This was followed by a self-hosted survey with a screener (19–30 Sep), then <b>14 synthetic persona interviews</b>: 7 personas (5 candidates, 2 hiring managers), each run separately in ChatGPT and Gemini, answering the same interview guide. Real interviews didn't happen in time; that is the main gap, and the next step.</p>
     <div class="kpis">
       <div class="kpi"><b>26</b><span>survey starts</span></div>
       <div class="kpi"><b>14</b><span>completed</span></div>
@@ -313,15 +317,16 @@
     <h3>Hypotheses scorecard</h3>
     <div class="tbl"><table>
       <tr><th>#</th><th>Hypothesis</th><th>Signal so far</th><th>Status</th></tr>
-      <tr><td>H1</td><td>Candidates don't prepare in a structured way</td><td>ChatGPT and YouTube are the main tools; nobody paid for coaching</td><td><span class="tag v">Supported</span></td></tr>
-      <tr><td>H2</td><td>Rejected candidates are rarely told why</td><td>Weaker than expected; to probe in the interviews</td><td><span class="tag w">Weak</span></td></tr>
-      <tr><td>H3</td><td>Failure points differ by role</td><td>Too few field-role replies to split by role</td><td><span class="tag a">Open</span></td></tr>
-      <tr><td>H4</td><td>Field roles prefer practising in Hindi / regional languages</td><td>Little demand for Hindi so far, but very few field-role candidates answered</td><td><span class="tag w">Weak</span></td></tr>
-      <tr><td>H5</td><td>Micro-pricing fits</td><td>People want unlimited access for a period, not packs → pricing reframed</td><td><span class="tag a">Changed</span></td></tr>
+      <tr><td>H1</td><td>Candidates don't get realistic practice with feedback</td><td>Survey: ChatGPT and YouTube are the main tools, nobody paid for coaching. Personas: all 5 have material, none has practice that pushes back</td><td><span class="tag v">Supported</span></td></tr>
+      <tr><td>H2</td><td>Rejected candidates are rarely told why</td><td>Survey: weak. Personas: one-line reasons at best; both hiring personas admit they don't explain</td><td><span class="tag a">Mixed</span></td></tr>
+      <tr><td>H3</td><td>Failure points differ by role</td><td>Personas: collections = pressure, sales = own numbers, credit = case files, data = BFSI terms, switchers = office English</td><td><span class="tag v">Supported</span> <span class="tag a">Synthetic</span></td></tr>
+      <tr><td>H4</td><td>Field roles prefer practising in Hindi / regional languages</td><td>True for field roles (and the NBFC manager wants to hear the Kannada role-play); others want help sounding professional in English</td><td><span class="tag a">Changed</span></td></tr>
+      <tr><td>H5</td><td>Micro-pricing fits</td><td>Survey: "monthly unlimited". Personas: monthly 0 of 5; ₹99–200 once 3 of 5; "college, institute or employer should pay" 5 of 5</td><td><span class="tag a">Split</span></td></tr>
       <tr><td>H6</td><td>Candidates distrust paying anyone "to get a job"</td><td>6 of 14 were asked to pay for a job; 1 actually paid</td><td><span class="tag v">Supported</span></td></tr>
-      <tr><td>H7</td><td>Employers would pay for a screened pool</td><td>2 HR interviews, 26–28 Sep</td><td><span class="tag a">Open</span></td></tr>
+      <tr><td>H7</td><td>Employers would pay for a screened pool</td><td>NBFC manager: maybe, per hire, only after 30 days; a score alone is "meaningless". Bank HR: won't pay for candidates; might pilot an assessment tool</td><td><span class="tag a">Split</span> <span class="tag a">Synthetic</span></td></tr>
     </table></div>
-    <p><b>What that changes:</b> Hindi stays in the MVP, because the field-role audience wasn't reached, but it's no longer the lead message. The lead is <b>role-play depth and the benchmark score</b>, which is the gap ChatGPT leaves.</p>
+    <p><b>What that changes:</b> the lead message is <b>role-play depth and honest feedback</b>, the gap ChatGPT leaves ("it always agrees with me"). Hindi and Kannada stay for field roles. Candidates are a weak payer on their own, so colleges, institutes and NBFCs carry the revenue.</p>
+    <div class="callout amber"><b>How far to trust the persona interviews:</b> they are AI-simulated, not real users. Lines that praise the idea are ignored, because they echo the prompt. The objections (no monthly plans, "don't shout at me more", "a score means nothing", data privacy) are kept, because the AIs produced them against the grain. Gemini invented 4 numbers despite instructions, and none are used. All 14 transcripts and the scoring rules are kept in the research folder.</div>
 
     <h3>MVP features</h3>
     <div class="tbl"><table>
@@ -330,12 +335,17 @@
       <tr><td><b>Role-play scenarios</b> (collections call, sales objection, credit case)</td><td>Yes</td><td>The difference from ChatGPT and Apna. If users don't value these, the positioning is wrong.</td></tr>
       <tr><td><b>Push-back follow-ups</b> (e.g. job-loss customer → "I'll complain to RBI")</td><td>Yes</td><td>Being challenged is what ChatGPT and YouTube don't give. It's also what candidates freeze on in real interviews.</td></tr>
       <tr><td><b>Red-line check</b> (RBI recovery rules, mis-selling, kickbacks)</td><td>Yes</td><td>A rule-breaking answer fails a real BFSI interview. Employers care about this more than polish.</td></tr>
-      <tr><td><b>Feedback: 3 strengths, 3 fixes, 3-step plan</b></td><td>Yes</td><td>Tests H2: whether knowing what to fix is worth paying for.</td></tr>
+      <tr><td><b>Push-back intensity: gentle / realistic / tough</b></td><td>Yes</td><td>Burnt-out switchers don't want more shouting; field freshers need the pressure. Personas asked for both.</td></tr>
+      <tr><td><b>Feedback: 3 strengths, 3 fixes, a better answer, 3-step plan</b></td><td>Yes</td><td>Tests H2. Personas asked to see a better answer, not just a mark ("don't say toxic, say this instead").</td></tr>
+      <tr><td><b>Type or speak</b>, 10-minute sessions</td><td>Yes</td><td>People practise at 11 p.m. in shared rooms, or after a 10-hour shift.</td></tr>
       <tr><td><b>Benchmark score + share card</b></td><td>Yes</td><td>The reason to come back, and the main growth loop.</td></tr>
       <tr><td>English + Hindi</td><td>Yes</td><td>Tests H4 properly with field-role users.</td></tr>
       <tr><td>~50 questions per role</td><td>Yes</td><td>Enough for 10+ mocks without repeats; small enough to review by hand.</td></tr>
       <tr><td>UPI payments</td><td>Yes</td><td>Tests willingness to pay from day one.</td></tr>
-      <tr><td>Employer portal</td><td>No</td><td>Month 6+, once there's a pool worth showing.</td></tr>
+      <tr><td>Mock built from a pasted job description</td><td>Next</td><td>Cheap to add; switchers asked for it.</td></tr>
+      <tr><td>Credit case mode (statement + slips, timed, then marked)</td><td>Next</td><td>Credit candidates fail on case files, not questions.</td></tr>
+      <tr><td>Role-fit check for switchers</td><td>Next</td><td>A free hook: "which jobs can I get with 2 years in collections?"</td></tr>
+      <tr><td>Employer view (audio clip + red-line result)</td><td>No</td><td>Month 6+, once there's a pool worth showing.</td></tr>
       <tr><td>More languages, video / body-language analysis</td><td>No</td><td>Expensive, and not needed to prove the core idea.</td></tr>
     </table></div>
   </section>
@@ -406,7 +416,8 @@ There's a free prototype if you want to try it, but I'm more interested in your 
       <tr><td>Apna adds BFSI role-plays</td><td>Apna launches role-specific mocks</td><td>Move faster on employers; the verified pool is harder to copy</td></tr>
       <tr><td>Users won't pay for AI feedback</td><td>Conversion under 2% by month 2</td><td>Test ₹49, or shift revenue to employers sooner</td></tr>
       <tr><td>Hindi voice quality is poor</td><td>Hindi helpfulness rating under 3.5</td><td>Run Hindi as text + speech-to-text first</td></tr>
-      <tr><td>Employers won't pay per hire</td><td>Pilots end with no paid hire</td><td>Switch to a monthly pool subscription</td></tr>
+      <tr><td>Employers won't pay per hire</td><td>Pilots end with no paid hire</td><td>Lean on colleges and institutes; sell banks an assessment tool, not candidates</td></tr>
+      <tr><td>Candidate data privacy</td><td>A bank's infosec review blocks sharing</td><td>Consent-first sharing, audio and results only, no CVs without approval</td></tr>
     </table></div>
   </section>
 
@@ -415,8 +426,8 @@ There's a free prototype if you want to try it, but I'm more interested in your 
     <h2>Feedback I'd value, Sir</h2>
     <ol class="q">
       <li><b>Beachhead:</b> is starting with field roles (collections / sales) right, or would analyst roles be an easier first market to reach through colleges?</li>
-      <li><b>Pricing:</b> the survey pointed to "unlimited for a period". Is a 90-day pass at ₹599 the right answer, or should the ₹499 pack go now?</li>
-      <li><b>Employer fee:</b> is 20% of first-month salary, paid by the employer, credible to an NBFC HR head?</li>
+      <li><b>Pricing:</b> the survey said "monthly unlimited", but the persona interviews said "₹99 once, or let my college pay". Should I lead with selling seats to colleges and institutes?</li>
+      <li><b>Employer fee:</b> is 20% of first-month salary, paid only after the hire stays 30 days, credible to an NBFC regional HR head?</li>
       <li><b>North Star:</b> is "mock interviews completed per week" the right L0, or should it be closer to outcomes (offers)?</li>
       <li><b>Evidence:</b> with a small survey, what would make the validation section convincing to you?</li>
     </ol>
