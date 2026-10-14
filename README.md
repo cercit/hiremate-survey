@@ -1,15 +1,51 @@
-# HireMate survey site
+# HireMate
 
-A self-hosted replacement for the Google Form. One HTML file, answers stored in Supabase.
+An AI mock-interview app for Indian freshers and early-career switchers going into bank and NBFC jobs (collections, field sales, credit and data analyst). It plays the real interview for the role, argues back like a branch manager, flags answers that break RBI or fair-selling rules, and shows a better answer.
 
-## Files
+Built as a mini project for the Product Management program by Masai × IIT Roorkee, by Sameer Shreenivas Mittimani (October 2026).
+
+## Start here
+
+| | Link |
+|---|---|
+| **Launch strategy (PDF, 6 pages)** | [HireMate-Launch-Strategy.pdf](HireMate-Launch-Strategy.pdf) |
+| Strategy site | https://cercit.github.io/hiremate-survey/strategy/ |
+| Landing page | https://cercit.github.io/hiremate-survey/home/ |
+| Clickable prototype | https://cercit.github.io/hiremate-survey/demo/ |
+| Research survey (closed 30 Sep 2026) | https://cercit.github.io/hiremate-survey/ |
+
+## What's in this repo
+
+| Path | What it is |
+|---|---|
+| `HireMate-Launch-Strategy.pdf` | The final submission |
+| `strategy/`, `home/`, `demo/`, `index.html` | The live site: strategy, landing page, prototype, survey |
+| `project/HireMate-Market-Research.md` | Market research from 4 AI tools, cross-checked, with the 6 errors caught |
+| `project/research/verified-fact-sheet.md` | Every number used, checked at the source |
+| `project/research/verified-question-bank.md` | 48 BFSI interview scenarios, 12 per role, with red lines and fixes |
+| `project/research/ai-role-grounding/` | Raw prompts and responses: how banks and NBFCs hire (ChatGPT, Gemini) |
+| `project/research/role-grounding-*.md` | Those responses, checked against RBI, IIBF, ICICI and Mahindra Finance sources |
+| `project/research/persona-interviews/` | 14 AI-simulated persona interviews (7 personas × ChatGPT and Gemini), scoring rules and the combined synthesis |
+| `project/research/simulated-interviews-*.md` | An earlier round of simulated interviews |
+| `project/user-research/` | Research plan, survey design, interview guides, persona prompts, the LinkedIn post |
+| `project/process-log.md` | A running log of every prompt, decision and error caught |
+| `project/final-source/` | The HTML the PDF is printed from, plus the render and screenshot scripts |
+
+**About the persona interviews:** they are AI-simulated, not real users, and are labelled that way in every file. They were used to sharpen hypotheses, not as evidence.
+
+---
+
+## Running the survey yourself
+
+
+### Files
 
 | File | What it is |
 |---|---|
 | `supabase-setup.sql` | Table + security policy + summary view. Paste into Supabase → SQL Editor → Run. |
 | `index.html` | The survey page: screening question + 15 questions, progress bar, mobile and desktop. |
 
-## Setup, in order
+### Setup, in order
 
 **1. Supabase**
 - Open your Supabase project → **SQL Editor** → **New query**
@@ -31,7 +67,7 @@ A self-hosted replacement for the Google Form. One HTML file, answers stored in 
 - Then run through the whole thing answering **Yes**
 - Check both rows appear in Supabase → **Table Editor** → `hiremate_survey_responses`
 
-## Reading the responses
+### Reading the responses
 
 - **Supabase → Table Editor → `hiremate_survey_responses`** → the **Export** button gives you CSV
 - Quick counts, in the SQL editor: `select * from hiremate_survey_summary;`

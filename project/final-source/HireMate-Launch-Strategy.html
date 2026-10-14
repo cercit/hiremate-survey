@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HireMate Launch Strategy</title>
+<style>
+  @page { size: A4; margin: 20mm 20mm 18mm 20mm; }
+  :root { --ink:#1d1f23; --muted:#5d6470; --line:#d7dbe2; --accent:#1a56c4; --tint:#f4f6f9; }
+  * { box-sizing: border-box; }
+  body { margin:0; color:var(--ink); font-family: Georgia, "Times New Roman", "Noto Serif Devanagari", serif; font-size:9.8pt; line-height:1.43; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  h1, h2, h3, .sans, table, figcaption, .head { font-family: "Segoe UI", Arial, sans-serif; }
+  h1 { font-size:19pt; margin:0; font-weight:700; letter-spacing:-.2pt; }
+  .head { font-size:9pt; color:var(--muted); margin:3pt 0 10pt; line-height:1.45; }
+  h2 { font-size:12.5pt; margin:11pt 0 4pt; font-weight:700; break-after:avoid; }
+  h3 { font-size:10.3pt; margin:9pt 0 2pt; font-weight:700; color:#333; break-after:avoid; }
+  p { margin:0 0 6pt; }
+  a { color:var(--accent); text-decoration:none; }
+  sup { font-size:6.5pt; color:var(--accent); font-family:"Segoe UI",Arial,sans-serif; }
+  table { width:100%; border-collapse:collapse; margin:3pt 0 7pt; font-size:8.4pt; line-height:1.35; }
+  tr { break-inside:avoid; }
+  th, td { border-bottom:0.6pt solid var(--line); padding:3pt 5pt 3pt 0; text-align:left; vertical-align:top; }
+  th { color:var(--muted); font-weight:600; border-bottom:1pt solid #9aa3b0; }
+  ul, ol { margin:2pt 0 6pt 15pt; padding:0; } li { margin:0 0 2pt; }
+  .quote { margin:6pt 0 8pt; padding:2pt 0 2pt 10pt; border-left:2pt solid var(--accent); font-style:italic; color:#333; }
+  .note { background:var(--tint); padding:5pt 8pt; margin:4pt 0 8pt; font-size:9.3pt; break-inside:avoid; }
+  .shots { display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:8pt; margin:4pt 0 6pt; }
+  .shots { align-items:start; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:10pt; }
+  figure { margin:4pt 0 8pt; break-inside:avoid; }
+  figure img { width:100%; border:0.6pt solid var(--line); display:block; }
+  figcaption { font-size:7.9pt; color:var(--muted); margin-top:2pt; line-height:1.35; }
+  .post { font-family:"Segoe UI",Arial,sans-serif; font-size:8.5pt; line-height:1.42; border:0.6pt solid var(--line); padding:5pt 7pt; white-space:pre-wrap; margin-bottom:6pt; }
+  .post b { display:block; white-space:normal; margin-bottom:2pt; }
+  .src { font-family:"Segoe UI",Arial,sans-serif; font-size:7.9pt; color:var(--muted); line-height:1.4; }
+  .src ol { margin-left:13pt; columns:2; column-gap:14pt; }
+  .src li { break-inside:avoid; }
+</style>
+</head>
+<body>
+
+<h1>HireMate: launch strategy</h1>
+<div class="head">Sameer Shreenivas Mittimani · Mini project, Product Management (Masai × IIT Roorkee) · October 2026<br>
+Live site: <a href="https://cercit.github.io/hiremate-survey/strategy/">cercit.github.io/hiremate-survey</a> · Prototype: <a href="https://cercit.github.io/hiremate-survey/demo/">/demo</a> · Code: <a href="https://github.com/cercit/hiremate-survey">github.com/cercit/hiremate-survey</a></div>
+
+<div class="quote">"Customer ne teen EMI miss kiye hain. Aap kya bologe?"<br><span style="font-style:normal;font-size:8.8pt;color:var(--muted)">(The customer has missed three EMIs. What will you say?)</span></div>
+
+<p>This is a real first-round question for a collections job at an NBFC. Most freshers answer it with a threat ("pay or we take the vehicle"), and that one answer is enough to get rejected, because RBI's rules for recovery agents ban exactly that.<sup>1</sup> Nobody tells them why they failed. They go home and watch another YouTube video.</p>
+
+<h2>1. Executive summary</h2>
+<p>HireMate is an AI mock-interview app for freshers and early-career switchers in India who are going for high-volume bank and NBFC jobs: Collections Officer, Field Sales / Relationship Executive, Credit Analyst and Data Analyst. It plays the real interview for that role in English or Hindi, argues back the way a branch manager does, flags any answer that would break RBI or fair-selling rules, and shows a better answer. I want to reach 10,000 users in six months through Tier-2 colleges and WhatsApp job groups, and make money from small one-time payments, college and institute seats, and a fee NBFCs pay only when a hire stays 30 days.</p>
+<p>The brief imagined HireMate for product, software and analyst roles. I moved it to BFSI on purpose. I work in vehicle finance, so these are jobs I see up close, and they turn over constantly. Exponent and Pramp already serve tech candidates well. Nobody gives a ₹18,000-a-month collections fresher in Hubballi a realistic practice interview.</p>
+
+<h3>Why now</h3>
+<p>Fresher hiring grew 15% year on year in August 2026.<sup>2</sup> In Apna's BFSI data for Mumbai, 98.2% of postings were open to people with three years or less experience, and entry-level collections jobs grew 34% in FY26.<sup>3</sup> But only 21% of freshers say they feel ready going into an interview.<sup>4</sup> And NBFC frontline attrition runs around 77% a year,<sup>5</sup> which is bad for the NBFC but good for HireMate: the same person comes back before their next switch.</p>
+
+<h2>2. Pricing strategy</h2>
+<h3>Who pays, and how much they'll pay</h3>
+<p>I split users into five groups, because they behave very differently with money.</p>
+<table>
+  <tr><th style="width:24%">Segment</th><th style="width:10%">Pay / month</th><th>What I found about willingness to pay</th></tr>
+  <tr><td>Field freshers (collections, sales). <i>Beachhead</i></td><td>₹15–22k</td><td>Almost none. Many have already lost money to "pay for a job" agents, so they don't trust anything that charges upfront. They'd use it if their college gave it free.</td></tr>
+  <tr><td>Analyst freshers and MBAs (credit, data)</td><td>₹25–35k</td><td>₹100–200 once, before a specific interview, after trying a free mock. Not monthly.</td></tr>
+  <tr><td>Switchers with 1–3 years. <i>Beachhead</i></td><td>₹18–40k</td><td>Will pay a small amount when a big interview is coming. Already pay for things like Naukri Premium.</td></tr>
+  <tr><td>Colleges and training institutes</td><td>—</td><td>They sell "placement support" and can't back it with interview practice. Every candidate I modelled said the college or institute should pay.</td></tr>
+  <tr><td>Employers (NBFCs first, banks later)</td><td>—</td><td>A frontline hire costs ₹50k–1.5 lakh to find and train. They'll pay per hire, but only for people who stay.</td></tr>
+</table>
+
+<h3 style="break-before:page">The model I chose</h3>
+<p>Freemium, then pay per interview, plus a pass that ends on its own. People don't prepare all year. They prepare hard for two weeks before interviews and then stop, so a monthly subscription would mostly collect money from people who already got the job. The first mock is free because job seekers in India have been trained by scams not to pay before they see anything.</p>
+<table>
+  <tr><th style="width:22%">Tier</th><th style="width:15%">Price</th><th>What you get</th></tr>
+  <tr><td>Basic</td><td>Free</td><td>Profile, one full mock interview, basic feedback</td></tr>
+  <tr><td>Pro (single mock)</td><td>₹99</td><td>One role-specific mock with push-back, detailed feedback, a better answer for each question, the red-line check and a benchmark score. Built for the night before an interview.</td></tr>
+  <tr><td>Premium (Job-Ready Pass)</td><td>₹599 for 90 days</td><td>Unlimited mocks (fair use 30), resume review, a three-step growth plan and a shareable score card. It ends after 90 days and never renews by itself.</td></tr>
+</table>
+<p>Around this sit three smaller things: a ₹10 AI resume review (a tiny first UPI payment, to start the habit), Job-Ready Pass seats sold to colleges and institutes at roughly ₹300–400 a seat, and the employer fee below.</p>
+
+<h3>How it compares</h3>
+<table>
+  <tr><th style="width:20%">Product</th><th>What you get</th><th style="width:22%">Price</th></tr>
+  <tr><td>ChatGPT</td><td>Questions and model answers. It agrees with whatever you type, never plays the angry customer, no benchmark.</td><td>Free</td></tr>
+  <tr><td>Apna AI Job Prep</td><td>Generic mock interviews in Hindi and regional languages, about 7.6 lakh done.<sup>6</sup></td><td>Free</td></tr>
+  <tr><td>Exponent</td><td>Courses and mock practice for tech and PM roles, in English.</td><td>$12/month (annual), $79 monthly<sup>7</sup></td></tr>
+  <tr><td>Pramp</td><td>Peer-to-peer mock interviews, tech roles.</td><td>Free</td></tr>
+  <tr><td>InterviewBuddy</td><td>A human expert runs the mock.</td><td>About ₹1,000–2,500 a session</td></tr>
+  <tr><td><b>HireMate</b></td><td><b>BFSI role-plays that argue back, RBI red-line check, better answers, benchmark score</b></td><td><b>Free, then ₹99 or ₹599</b></td></tr>
+</table>
+<p>The honest competitor is ChatGPT, not Apna. In my survey, ChatGPT and YouTube were what people actually used to prepare, and nobody had paid for coaching. So HireMate can't compete on "AI mock interviews". It has to do the things ChatGPT doesn't: push back, know the rules of the job, and tell you why you'd be rejected.</p>
+
+<h3>Why this works for an early, bootstrapped product</h3>
+<p>The prices fit the people. ₹99 is half a percent of a ₹20,000 monthly salary, and the ₹599 pass is 3%. That's ten to twenty-five times cheaper than one human mock. The margins are healthy from the first rupee: a 20-minute voice mock costs about ₹8–12 in speech-to-text, the language model and voice. That leaves roughly 90% on a ₹99 mock, and about half even if someone uses all 30 mocks on the pass.</p>
+<p>Most importantly, the plan doesn't depend on the weakest payer. Candidates are price-sensitive and wary, so colleges, institutes and NBFCs carry more of the revenue as the user base grows. And candidates never pay a share of their salary. That rule is deliberate. In my survey, 6 of 14 people had been asked to pay money to get a job, and one had actually paid. The draft Private Placement Agency Bill, 2025 targets exactly these fees.<sup>8</sup></p>
+
+<h3>The employer side (from month 6)</h3>
+<p>NBFCs pay a success fee of 20% of the hire's first-month salary, about ₹3,600 on an ₹18,000 job, <b>due only after the person has worked 30 days</b>. A placement agency typically takes around a month's salary, so this is about a fifth of that, and only for people who stay. I'd sell it to regional HR, because branch managers can't approve spend. Banks are different: they won't pay for "screened candidates", but they might pilot a role-specific assessment through procurement, after an information-security review. Either way, an employer gets a 30-second audio clip of the candidate's role-play, the red-line result and their reasoning, never just a score, and only with the candidate's consent.</p>
+
+<h2>3. Growth strategy: 0 to 10,000 users</h2>
+<p>I'd start where I can reach people by hand, then let the score card do the spreading, and only pay for growth once the free channels are proven.</p>
+<table>
+  <tr><th style="width:17%">Phase</th><th>What I'd do</th><th style="width:17%">Budget, CAC target</th></tr>
+  <tr><td><b>0 → 1,000</b><br>months 1–2</td><td>Everyone from the pre-launch survey gets early access and two free mocks. "Mock interview days" at five commerce and management colleges in north Karnataka (Hubballi, Dharwad, Belagavi) in the week before placements. A short Hindi/Kannada collections role-play clip posted in WhatsApp and Telegram job groups, which is where field candidates actually look for jobs. Referral: invite a friend, both get a free mock. One LinkedIn post a week from me on a real interview mistake.</td><td>₹0–20k<br>under ₹20</td></tr>
+  <tr><td><b>1,000 → 5,000</b><br>months 3–4</td><td>The shareable score card ("Top 20% for Collections, Hindi") for WhatsApp Status and LinkedIn. Short "got the job" stories in users' own words. Hindi Reels on "what the manager wants to hear". A monthly LinkedIn post on what we learned from the mocks. College placement cells and training institutes buying seats.</td><td>about ₹50k<br>under ₹30</td></tr>
+  <tr><td><b>5,000 → 10,000</b><br>months 5–6</td><td>5–10 Hindi career YouTubers, paid per sign-up. Meta and Google ads on searches like "bank jobs" and "collection jobs" in Tier-2/3 cities, scaled only where they beat the CAC target. WhatsApp and email nudges: on day 1 ("finish your first mock"), day 3 ("your score vs others"), the night before an interview, and after 14 quiet days. Two or three NBFC pilots on the pay-after-30-days fee.</td><td>₹2–3 lakh<br>under ₹40</td></tr>
+</table>
+<p><b>Channels:</b> WhatsApp and Telegram job groups, colleges and training institutes, Hindi/Kannada short video, LinkedIn for analysts and switchers, and paid ads only in phase 3.</p>
+<p><b>Levers:</b> the score card is the viral trigger, because people share a ranking, not a practice session. Referrals are paid in free mocks, which cost me about ₹10, not in cash. There's also a network effect: more users make the benchmark sharper, a sharper benchmark makes the score worth more, and a better pool is what NBFCs will pay for. And the 77% attrition brings people back for their next switch.</p>
+<table>
+  <tr><th>What I'd track</th><th>Phase 1</th><th>Phase 2</th><th>Phase 3</th></tr>
+  <tr><td>Total sign-ups</td><td>1,000</td><td>5,000</td><td>10,000</td></tr>
+  <tr><td>Activation (sign-up to first mock completed)</td><td>60%</td><td>60%</td><td>55%</td></tr>
+  <tr><td>Free to paid, including institution seats</td><td>3%</td><td>5%</td><td>7%</td></tr>
+  <tr><td>Blended CAC</td><td>under ₹20</td><td>under ₹30</td><td>under ₹40</td></tr>
+  <tr><td>Share of sign-ups from referrals</td><td>30%</td><td>25%</td><td>15%</td></tr>
+  <tr><td>30-day retention (two or more mocks)</td><td>35%</td><td>40%</td><td>40%</td></tr>
+</table>
+
+<h2>4. MVP strategy</h2>
+<h3>The problem, and how I checked it</h3>
+<p>I didn't want to write this section from my own head, so I did four things. First, market research: I ran the same prompt in Gemini, ChatGPT, Perplexity and Grok, then checked every number at its original source. The AI tools made six errors, which I removed. Second, I ran a self-hosted survey with a screener from 19 to 30 September: 26 people started, 14 finished, and 6 were in the target roles. Third, I mapped how Indian banks and NBFCs actually hire for these four roles, checked against RBI, IIBF, ICICI and Mahindra Finance sources. That gave me a 48-scenario question bank, and it caught seven more AI errors, including four "model answers" that would themselves break fair-practice rules. Fourth, since real interviews didn't happen in time, I ran 14 AI persona interviews: seven people (five candidates, two hiring managers), each run separately in ChatGPT and Gemini on the same interview guide.</p>
+<div class="note">A word on those persona interviews: they are AI-simulated, not real users, and I've treated them that way. Any line that praises the idea, I ignored, because it's just the prompt echoing back. I kept the objections: no monthly plans, "don't shout at me more", "a score means nothing to me", worries about data privacy. The AIs produced those against the grain. Gemini also made up four numbers despite being told not to; none of them are used here. Real interviews are the biggest gap in this work and the first thing I'd do next.</div>
+
+<p>What came out of all this:</p>
+<ul>
+  <li><b>Nobody gets practice that pushes back.</b> Everyone had material (YouTube, ChatGPT, a course), but nothing that argues with them and marks the answer. One persona put it plainly: ChatGPT "always agrees with me".</li>
+  <li><b>Rejected candidates rarely learn why.</b> The survey signal was weak here, but in the personas the best anyone got was a one-line reason, and both hiring managers admitted they don't explain.</li>
+  <li><b>Each role fails on something different.</b> The collections fresher froze when the manager raised his voice. The sales switcher couldn't defend her own conversion numbers. The MBA couldn't work out a shop owner's income from a messy bank statement. The engineer passed the SQL test but didn't know what DPD meant.</li>
+  <li><b>Language matters for field roles</b>, not across the board. Analysts and switchers want help sounding professional in English.</li>
+  <li><b>Payment is split.</b> No candidate wanted a monthly plan. Three of five would pay ₹99–200 once. All five named someone else who should pay: a college, an institute or an employer.</li>
+  <li><b>Employers are cautious.</b> The NBFC manager would pay per hire, only after 30 days, and wants to hear the role-play. The bank HR wouldn't pay for candidates at all.</li>
+</ul>
+<p>Today's options all fall short at the same point. YouTube gives fixed answers. ChatGPT gives polished answers and agrees with you. Apna's mocks are generic. Paid courses (₹999 to ₹40,000 among the personas) teach tools, not the interview. A human mock costs ₹1,000 or more. None of them argues back or knows the rules a collections candidate has to follow. So the positioning is simple: <b>ChatGPT tells you answers. HireMate argues back.</b></p>
+
+<h3>MVP features</h3>
+<table>
+  <tr><th style="width:36%">Feature</th><th>Why it's in the MVP</th></tr>
+  <tr><td>AI mock interview for the four roles, by voice or by typing</td><td>The core value. Voice, because field roles are judged on how you speak. Typing, because people practise at 11 p.m. in shared rooms.</td></tr>
+  <tr><td>Role-play scenarios with one push-back each</td><td>This is what ChatGPT and Apna don't do. If users don't value being challenged, my positioning is wrong, and I want to know early.</td></tr>
+  <tr><td>Interviewer style: gentle, realistic or tough</td><td>Field freshers need the pressure. Burnt-out switchers don't want more shouting. I'll learn which style keeps people coming back.</td></tr>
+  <tr><td>Red-line check (RBI recovery rules, mis-selling, kickbacks)</td><td>One rule-breaking answer fails a real BFSI interview, and it's what employers care about most.</td></tr>
+  <tr><td>Feedback: strengths, three fixes, a better answer, a three-step plan</td><td>This tests whether knowing what to fix is worth paying for.</td></tr>
+  <tr><td>A small, verified question bank (48 scenarios, growing to about 50 per role)</td><td>Enough for ten mocks without repeats, and small enough for me to check by hand.</td></tr>
+  <tr><td>Benchmark score and share card</td><td>The reason to come back, and the main growth loop.</td></tr>
+  <tr><td>English and Hindi, UPI payments</td><td>Tests the language need with field users, and willingness to pay from day one.</td></tr>
+</table>
+<p>Left out on purpose: a mock built from a pasted job description, a credit case mode and a role-fit check come next, once the core loop holds people. The employer view, more languages and video analysis wait until month six or later.</p>
+
+<h2>5. Success metrics</h2>
+<p>My North Star (L0) is <b>mock interviews completed per week</b>, with a target of 5,000 by month six. A completed mock means someone got value, and the number only goes up if sign-ups, activation and repeat use all go up together, so it's hard to fake.</p>
+<table>
+  <tr><th style="width:7%">Level</th><th style="width:37%">Metric</th><th style="width:15%">Month-6 target</th><th>Why it matters</th></tr>
+  <tr><td>L0</td><td>Mock interviews completed per week</td><td>5,000</td><td>The North Star, above.</td></tr>
+  <tr><td>L1</td><td>Activation: sign-up to first mock completed</td><td>55–60%</td><td>If this is low, onboarding or trust is broken.</td></tr>
+  <tr><td>L1</td><td>Free to paid, including institution seats</td><td>7%</td><td>Tells me whether HireMate is worth ₹99, and to whom.</td></tr>
+  <tr><td>L1</td><td>30-day retention (two or more mocks)</td><td>40%</td><td>Practice only works if it's repeated.</td></tr>
+  <tr><td>L1</td><td>Blended CAC</td><td>under ₹40</td><td>I'm bootstrapped, so growth has to pay for itself.</td></tr>
+  <tr><td>L2</td><td>Feedback helpfulness rating</td><td>4.2 / 5 or more</td><td>The feedback is the product. This drops before churn shows up.</td></tr>
+  <tr><td>L2</td><td>Score gain from mock 1 to mock 3</td><td>+15%</td><td>Proof that people actually get better.</td></tr>
+  <tr><td>L2</td><td>Self-reported interview-to-offer rate, and 30-day retention of placed hires</td><td>Baseline in month 2</td><td>The outcome users care about, and the number NBFCs pay on.</td></tr>
+</table>
+
+<h2>What changed while I worked on this</h2>
+<p>A few of my first decisions didn't survive. I started with a 10-mock pack at ₹499 as the main paid plan. The survey didn't pick it once, and neither did any persona, so it's gone. At first I also had candidates paying 20% of their first salary when they got a job. I moved that fee to the employer, because asking a job seeker for a share of their salary looks exactly like the scams I'm trying to protect them from. Later, the hiring-manager personas pushed it further: pay only after the person stays 30 days. And the survey said "monthly unlimited" while the personas said "₹99 once, or let my college pay". I haven't settled that one. I'd launch both the ₹99 mock and the ₹599 pass and let the first two months of real purchases decide.</p>
+
+<h2>6. Bonus: landing page, prototype and posts</h2>
+<p>Instead of a wireframe, I built a working landing page and a clickable prototype. Both are live and work on a phone. In the prototype you pick a role, a language and an interviewer style, then answer by voice or by typing. Each answer gets a push-back, a red-line check and a stronger answer. Try round 3 of Collections and type "OK sir, I'll call him at 7:30". The code is on GitHub: <a href="https://github.com/cercit/hiremate-survey">github.com/cercit/hiremate-survey</a>.</p>
+<div class="shots">
+  <figure><img src="img/landing-hero.png" alt="HireMate landing page"><figcaption>Landing page (<a href="https://cercit.github.io/hiremate-survey/home/">/home</a>): a Hindi collections role-play in the hero.</figcaption></figure>
+  <figure><img src="img/proto-pushback.png" alt="Prototype push-back"><figcaption>Agreeing to a 7:30 a.m. call trips the RBI red line; then the interviewer pushes back as the customer's brother.</figcaption></figure>
+  <figure><img src="img/proto-results.png" alt="Prototype result"><figcaption>The result: a red line caps the score at 45, however good the rest was, as in a real interview.</figcaption></figure>
+</div>
+
+<h3 style="break-before:page">Three promotional posts</h3>
+<div class="post"><b>LinkedIn (I published this on 19 September to launch the survey; excerpt)</b>How did you prepare for your first job interview?
+
+For me it was one night before, a few YouTube videos and my friend asking me "tell me about yourself" three times. That was my full preparation.
+
+I'm doing the Product Management program with IIT Roorkee and Masai, and we're building HireMate, an interview practice product for freshers and early-career people. Before building anything I want to hear from real job seekers, not guess. Only 21% of freshers feel ready going into an interview. I want to understand the other 79%.</div>
+<div class="two">
+<div class="post"><b>Instagram (five-slide carousel)</b>1. "Customer ne 3 EMI miss kiye. Aap kya bologe?"
+2. This is a real collections interview question.
+3. Most freshers answer it with a threat. Managers want empathy, a date and an amount.
+4. Practise it out loud, in Hindi or English. Get a score.
+5. HireMate. First mock free. Link in bio.
+
+Caption: Collections interview kal hai? The manager isn't testing your English. He's checking whether you can calm an angry customer and still leave with a date to pay.
+#bankjobs #nbfcjobs #collectionsjobs #freshersjobs</div>
+<div class="post"><b>Reddit (r/IndianWorkplace)</b>Interviewed for collections or field sales roles at NBFCs? What did they actually ask you?
+
+I'm building a small practice tool for entry-level BFSI interviews (collections, field sales, credit and data analyst). Before building more, I want to get the questions right. If you've sat one of these in the last year:
+1. Which question or role-play threw you?
+2. Were you told why you didn't get it?
+3. Has anyone asked you to pay money to get the job?
+
+There's a free prototype if you want to try it, but I'm more interested in your stories. No sign-up, not selling anything yet.</div>
+</div>
+
+<h2>Risks</h2>
+<table>
+  <tr><th style="width:24%">Risk</th><th style="width:26%">What would tell me early</th><th>What I'd do</th></tr>
+  <tr><td>"ChatGPT is good enough"</td><td>People try one mock but don't come back (repeat use under 20%)</td><td>Lean harder on push-back, red lines and the benchmark, which ChatGPT doesn't do</td></tr>
+  <tr><td>Apna adds BFSI role-plays</td><td>Apna launches role-specific mocks</td><td>Move faster on colleges and NBFCs; a verified question bank and employer relationships are harder to copy</td></tr>
+  <tr><td>Candidates won't pay</td><td>Conversion under 2% by month 2</td><td>Shift weight to college and institute seats; test ₹49</td></tr>
+  <tr><td>Employers won't pay per hire</td><td>Pilots end with no paid hire</td><td>Offer banks an assessment tool instead; keep institutions as the main payer</td></tr>
+  <tr><td>Candidate data privacy</td><td>A bank's security review blocks sharing</td><td>Share only audio and results, only with consent, and no CVs without approval</td></tr>
+</table>
+
+<div class="src">
+<b>Sources</b>
+<ol>
+  <li>RBI, review of instructions on recovery agents, DoR.SIG.FIN.REC.75/26.03.001/2022-23, 11 Oct 2022: no intimidation, no contacting family or friends about the debt, no calls before 8 a.m. or after 7 p.m.</li>
+  <li>Naukri JobSpeak, August 2026.</li>
+  <li>Apna, BFSI hiring report (Mumbai region), FY26.</li>
+  <li>Apna, Interview Readiness Index 2025.</li>
+  <li>TeamLease data, cited by Finezza, NBFC frontline attrition.</li>
+  <li>Apna, AI Job Prep figures.</li>
+  <li>Exponent pricing page.</li>
+  <li>Draft Private Placement Agency (Regulation) Bill, 2025.</li>
+</ol>
+All numbers were checked at the source. The research trail (market research, fact sheet, question bank, survey, 14 persona transcripts, prompt log) is kept with the project. Site and code: <a href="https://github.com/cercit/hiremate-survey">github.com/cercit/hiremate-survey</a>.
+</div>
+
+</body>
+</html>

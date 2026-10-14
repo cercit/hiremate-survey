@@ -1,0 +1,32 @@
+You are a labour-market research analyst focused on India. I am building a launch
+strategy for an AI mock-interview platform targeting (a) fresh graduates entering
+the workforce and (b) employees with under 3 years' experience switching their
+first job. Target roles: Data Analyst, Credit Analyst, Field Sales / Relationship
+Executive (banks and NBFCs), Collections Officer.
+
+Research and answer, with a source + year for every number:
+
+1. Entry-level hiring share: what % of job openings in India are for 0-3 years'
+   experience? Trend 2023-2026. (Check Naukri JobSpeak, TeamLease Employment
+   Outlook, India Skills Report, foundit/Indeed reports.)
+2. Pool size: annual graduates in India (engineering, commerce, BBA/MBA) and
+   estimated number of 0-3 yr employees actively job switching.
+3. BFSI hiring volume: annual hiring numbers for field sales, collections and
+   credit roles at Indian banks and NBFCs; attrition rates in these roles.
+4. Salary bands (monthly, INR) for each of the 4 target roles at entry level and
+   at 1-3 years.
+5. Interview process for each role: typical rounds, language (English vs Hindi/
+   regional), what gets candidates rejected.
+6. Willingness to pay: what do Indian job seekers currently spend on interview
+   prep, resume services and job assistance? Any survey data.
+7. Competitors in India and their current pricing: InterviewBuddy, Pramp,
+   Exponent, Final Round AI, Unstop, Apna, WorkIndia, Naukri paid services, any
+   AI interview tools. Note which cover BFSI roles and regional languages.
+8. Employer side: what do Indian NBFCs/banks pay recruitment agencies per hire
+   for field roles (fixed fee or % of CTC)?
+9. Regulatory/trust: any rules or common scams around charging job seekers
+   placement fees in India.
+
+Output format: one table per question (Metric | Value | Source | Year). Mark
+anything estimated or unverified as "ESTIMATE". End with 5 key insights for a
+launch strategy. Do not invent numbers; say "not found" instead.
