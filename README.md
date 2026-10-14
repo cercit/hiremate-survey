@@ -9,17 +9,17 @@ Built as a mini project for the Product Management program by Masai × IIT Roork
 | | Link |
 |---|---|
 | **Launch strategy (PDF, 6 pages)** | [HireMate-Launch-Strategy.pdf](HireMate-Launch-Strategy.pdf) |
-| Strategy site | https://cercit.github.io/hiremate-survey/strategy/ |
+| Home (strategy site) | https://cercit.github.io/hiremate-survey/ |
 | Landing page | https://cercit.github.io/hiremate-survey/home/ |
 | Clickable prototype | https://cercit.github.io/hiremate-survey/demo/ |
-| Research survey (closed 30 Sep 2026) | https://cercit.github.io/hiremate-survey/ |
+| Research survey (closed 30 Sep 2026) | https://cercit.github.io/hiremate-survey/survey/ |
 
 ## What's in this repo
 
 | Path | What it is |
 |---|---|
 | `HireMate-Launch-Strategy.pdf` | The final submission |
-| `strategy/`, `home/`, `demo/`, `index.html` | The live site: strategy, landing page, prototype, survey |
+| `index.html`, `home/`, `demo/`, `survey/` | The live site: strategy (home), landing page, prototype, survey. `strategy/` redirects to the home page |
 | `project/HireMate-Market-Research.md` | Market research from 4 AI tools, cross-checked, with the 6 errors caught |
 | `project/research/verified-fact-sheet.md` | Every number used, checked at the source |
 | `project/research/verified-question-bank.md` | 48 BFSI interview scenarios, 12 per role, with red lines and fixes |
