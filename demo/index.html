@@ -111,7 +111,7 @@
   <section id="setup">
     <div class="card">
       <h1>Try a mock interview</h1>
-      <p class="muted">3 rounds, about 10 minutes. The interviewer pushes back on every answer, like a real branch manager. Speak or type. At the end you get a score, a rule check and the 3 things to fix.</p>
+      <p class="muted">3 rounds, about 10 minutes. Pick how hard the interviewer pushes back. Speak or type, whichever suits where you are. At the end you get a score, a rule check and the 3 things to fix.</p>
 
       <div class="label">1 · Your role</div>
       <div class="choices" id="roleChoices"></div>
@@ -120,6 +120,13 @@
       <div class="choices" id="langChoices">
         <button class="choice" data-lang="en"><b>English</b><span>All roles</span></button>
         <button class="choice" data-lang="hi"><b>हिंदी</b><span>Collections and field sales</span></button>
+      </div>
+
+      <div class="label">3 · Interviewer style</div>
+      <div class="choices" id="styleChoices">
+        <button class="choice" data-style="gentle"><b>Gentle</b><span>One answer per round, coaching tone</span></button>
+        <button class="choice sel" data-style="realistic"><b>Realistic</b><span>Pushes back once, like a branch manager</span></button>
+        <button class="choice" data-style="tough"><b>Tough</b><span>Pushes back and marks harder</span></button>
       </div>
 
       <button class="btn primary full" id="startBtn" style="margin-top:20px" disabled>Start interview</button>
@@ -516,7 +523,7 @@ const ROLES = {
 };
 
 /* ---------- state ---------- */
-let role = null, lang = null, round = 0, stage = 0, first = null, results = [];
+let role = null, lang = null, style = "realistic", round = 0, stage = 0, first = null, results = [];
 const $ = s => document.querySelector(s);
 const show = id => ["setup","interview","results"].forEach(s => $("#"+s).classList.toggle("hidden", s!==id));
 const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -544,6 +551,12 @@ $("#langChoices").addEventListener("click", e => {
   $("#langChoices").querySelectorAll(".choice").forEach(c => c.classList.toggle("sel", c===b));
   updateStart();
 });
+$("#styleChoices").addEventListener("click", e => {
+  const b = e.target.closest(".choice"); if(!b) return;
+  style = b.dataset.style;
+  $("#styleChoices").querySelectorAll(".choice").forEach(c => c.classList.toggle("sel", c===b));
+});
+const STYLE_NAME = {gentle:"Gentle", realistic:"Realistic", tough:"Tough"};
 function updateStart(){ $("#startBtn").disabled = !(role && lang); }
 $("#startBtn").addEventListener("click", () => { round = 0; results = []; loadRound(); show("interview"); });
 
@@ -553,7 +566,7 @@ const current = () => { const q = ROLES[role].rounds[round]; return stage===1 ? 
 function loadRound(){
   const r = ROLES[role], q = r.rounds[round];
   stage = 0; first = null;
-  $("#roleTag").textContent = `${r.name} · ${lang==="hi"?"हिंदी":"English"}`;
+  $("#roleTag").textContent = `${r.name} · ${lang==="hi"?"हिंदी":"English"} · ${STYLE_NAME[style]}`;
   $("#roundTag").textContent = `Round ${round+1} of ${r.rounds.length}`;
   $("#roundBar").style.width = `${(round/r.rounds.length)*100}%`;
   $("#whoLabel").textContent = q.who;
@@ -576,7 +589,10 @@ function scoreAnswer(text, q){
   const covered = [], missed = [];
   q.ideas.forEach(idea => (idea.kw.some(has) ? covered : missed).push(idea));
   const flags = (q.red||[]).filter(f => f.kw.some(has) && !f.unless.some(has));
-  let score = words < 8 ? 25 : Math.round(38 + (covered.length/q.ideas.length)*50 + (words >= 25 ? 8 : 0));
+  const cover = covered.length/q.ideas.length;
+  let score = words < 8 ? 25
+    : style === "tough" ? Math.round(28 + cover*62 + (words >= 30 ? 6 : 0))   // missing points cost more
+    : Math.round(38 + cover*50 + (words >= 25 ? 8 : 0));
   score = Math.max(20, Math.min(96, score));
   if(flags.length) score = Math.min(score, 30);
   return { score, covered, missed, words, flags };
@@ -584,7 +600,7 @@ function scoreAnswer(text, q){
 const label = idea => ((lang==="hi" && idea.hi) ? idea.hi : idea.en).replace(/\.$/,"");
 const flagText = f => (lang==="hi" && f.hi) ? f.hi : f.en;
 
-function feedbackHTML(res, title){
+function feedbackHTML(res, title, better){
   const good = res.score >= 65 && !res.flags.length;
   return `<div class="round-fb ${good?"good":"mid"}">
       <span class="chip">${res.score}</span><b>${title ? title+" " : ""}${res.flags.length ? "Red line crossed." : good ? "Good answer." : "Getting there."}</b>
@@ -592,6 +608,7 @@ function feedbackHTML(res, title){
       ${res.covered.length ? `<div style="margin-top:6px">You covered: ${res.covered.map(label).join("; ")}.</div>` : ""}
       ${res.missed.length ? `<div style="margin-top:6px">Also cover: ${res.missed.map(label).join("; ")}.</div>` : ""}
       ${res.words < 8 ? `<div style="margin-top:6px">Your answer was very short. Interviewers expect 3–5 sentences.</div>` : ""}
+      ${better ? `<details style="margin-top:8px"><summary style="cursor:pointer;font-weight:600">See a stronger answer</summary><div class="mine" style="margin-left:0">${esc(better)}</div></details>` : ""}
     </div>`;
 }
 
@@ -602,13 +619,13 @@ $("#submitBtn").addEventListener("click", () => {
   const q = ROLES[role].rounds[round];
   const res = scoreAnswer(text, current());
 
-  if(stage === 0 && q.push){
+  if(stage === 0 && q.push && style !== "gentle"){
     // show the answer, a short verdict, then the interviewer pushes back
     first = res;
     const pushWho = q.push.who || "Interviewer pushes back";
     $("#thread").innerHTML = `
       <div class="mine">${esc(text)}</div>
-      ${feedbackHTML(res, "First answer:")}
+      ${feedbackHTML(res, "First answer:", q.sample[lang])}
       <div class="bubble push">
         <div class="who"><span>${pushWho}</span><button class="listen" id="listenPush">🔊 Listen</button></div>
         <div id="pushQ">${esc(q.push.q[lang])}</div>
@@ -628,7 +645,7 @@ $("#submitBtn").addEventListener("click", () => {
       words: Math.min(first.words, res.words), flags: first.flags.concat(res.flags) } : res;
   results.push(all);
   $("#thread").insertAdjacentHTML("beforeend", `<div class="mine">${esc(text)}</div>`);
-  $("#roundFeedback").innerHTML = feedbackHTML(res, first ? "Push-back answer:" : "") +
+  $("#roundFeedback").innerHTML = feedbackHTML(res, first ? "Push-back answer:" : "", current().sample[lang]) +
     (first ? `<p class="small" style="margin-top:8px">Round score: <b>${all.score}</b> (average of both answers)</p>` : "");
   $("#answer").disabled = true;
   $("#submitBtn").classList.add("hidden"); $("#sampleBtn").classList.add("hidden");
@@ -719,7 +736,7 @@ function showResults(){
   if(crossed) total = Math.min(total, 45);   // a red line fails the interview
   $("#totalScore").textContent = total;
   $("#ring").style.background = `conic-gradient(var(--blue) 0 ${total}%, var(--line) ${total}% 100%)`;
-  $("#resultTitle").textContent = `${r.name} · ${lang==="hi"?"हिंदी":"English"}`;
+  $("#resultTitle").textContent = `${r.name} · ${lang==="hi"?"हिंदी":"English"} · ${STYLE_NAME[style]}`;
   const band = total>=80 ? "top 20%" : total>=70 ? "top 35%" : total>=60 ? "top 50%" : "lower half";
   $("#bench").textContent = `Illustrative ranking: ${band} of candidates for this role`;
 
@@ -729,7 +746,7 @@ function showResults(){
   const flags = results.flatMap((res,i) => res.flags.map(f => `Round ${i+1}: ${flagText(f)}`));
   $("#rulecheck").innerHTML = flags.length
     ? flags.map(s=>`<li class="bad">${s}</li>`).join("")
-    : `<li class="ok">No red lines crossed in ${results.length*2} answers.</li>`;
+    : `<li class="ok">No red lines crossed in ${results.length*(style==="gentle"?1:2)} answers.</li>`;
 
   const strengths = [];
   results.forEach((res,i) => { if(res.covered.length) strengths.push(`Round ${i+1}: ${res.covered.map(label).join(", ")}.`); });
@@ -760,7 +777,7 @@ function showResults(){
 $("#againBtn").addEventListener("click", () => { round=0; results=[]; loadRound(); show("interview"); });
 $("#otherBtn").addEventListener("click", () => { show("setup"); window.scrollTo({top:0}); });
 $("#copyBtn").addEventListener("click", async () => {
-  const txt = `I scored ${$("#totalScore").textContent}/100 on a HireMate mock interview for ${ROLES[role].name} (${lang==="hi"?"Hindi":"English"}). Try one: ${location.href}`;
+  const txt = `I scored ${$("#totalScore").textContent}/100 on a HireMate mock interview for ${ROLES[role].name} (${lang==="hi"?"Hindi":"English"}, ${STYLE_NAME[style]} interviewer). Try one: ${location.href}`;
   try{ await navigator.clipboard.writeText(txt); toast("Score card copied."); }
   catch(_){ toast("Couldn't copy. Take a screenshot instead."); }
 });
